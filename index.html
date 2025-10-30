@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>CFW Match Randomizer — Best of 5 (d20) + Advantage</title>
+<style>
+  :root{
+    --bg:#0b0b10; --card:#151521; --ink:#e7e7f7; --muted:#9aa0b5;
+    --accent:#A97DF0; --accent-2:#F0B37D; --ok:#4cd964;
+    --shadow: 0 10px 30px rgba(0,0,0,.35), 0 2px 10px rgba(0,0,0,.3);
+    --radius: 18px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Arial; color:var(--ink);
+    background: radial-gradient(1200px 600px at 50% -10%, #1e1e2a 0%, #0b0b10 55%);
+    min-height:100dvh; padding:24px;}
+  .wrap{max-width:1100px; margin:0 auto; display:grid; gap:22px;}
+  header{display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap}
+  .brand{display:flex; align-items:center; gap:14px}
+  .logo{width:46px; height:46px; background:conic-gradient(from 220deg, var(--accent), var(--accent-2));
+    border-radius:12px; box-shadow:var(--shadow); display:grid; place-items:center; font-weight:800; letter-spacing:.5px; color:#0b0b10}
+  .title h1{margin:0; font-size:22px}
+  .title p{margin:2px 0 0; color:var(--muted); font-size:13px}
+  .panel{background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0));
+    border:1px solid rgba(255,255,255,.06); border-radius:var(--radius); padding:16px; box-shadow:var(--shadow)}
+  .controls{display:flex; gap:14px; align-items:center; flex-wrap:wrap}
+  .seg{display:inline-grid; grid-auto-flow:column; gap:6px; background:#0e0e16; padding:6px; border-radius:999px; border:1px solid rgba(255,255,255,.06)}
+  .seg button{all:unset; cursor:pointer; padding:8px 14px; border-radius:999px; color:#9aa0b5; font-weight:600; font-size:14px}
+  .seg button.active{background:linear-gradient(180deg,#26263a,#1a1a2a); color:var(--ink); box-shadow:var(--shadow)}
+  .chk{display:flex; align-items:center; gap:8px; color:var(--muted); font-size:14px}
+  .chk input{width:18px; height:18px; accent-color:var(--accent)}
+
+  .roster{display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:14px}
+  .card{position:relative; padding:12px; background:#151521; border-radius:16px; border:1px solid rgba(255,255,255,.08);
+    transition:.15s transform; cursor:pointer; display:flex; gap:12px; align-items:center}
+  .card:hover{transform:translateY(-2px)}
+  .avatar{width:150px; height:150px; border-radius:12px; display:grid; place-items:center; font-weight:800;
+    color:#0b0b10; box-shadow:inset 0 0 0 2px rgba(255,255,255,.08)}
+  .avatar img{width:100%; height:100%; object-fit:cover; border-radius:12px; display:block}
+  .nm{font-weight:700; font-size:14px}
+  .tag{font-size:11px; color:#9aa0b5}
+  .sel-dot{position:absolute; top:8px; right:8px; width:18px; height:18px; border-radius:50%;
+    background:transparent; border:2px solid rgba(255,255,255,.25)}
+  .card[aria-selected="true"] .sel-dot{background:var(--ok); border-color:transparent; box-shadow:0 0 0 2px rgba(76,217,100,.3)}
+
+  .picked{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+  .slot{min-height:84px; border:1px dashed rgba(255,255,255,.18); border-radius:14px; padding:10px;
+    display:flex; gap:10px; align-items:center; background:rgba(255,255,255,.02); flex-wrap:wrap}
+  .slot h4{margin:0 0 6px; font-size:13px; color:#9aa0b5; font-weight:600}
+  .chip{display:inline-flex; align-items:center; gap:8px; padding:8px 10px; border-radius:12px;
+    background:#1d1d2b; border:1px solid rgba(255,255,255,.08); font-size:13px; margin-right:8px}
+  .sm{width:24px; height:24px; border-radius:6px; display:grid; place-items:center; color:#0b0b10; font-weight:800}
+
+  .advbar{display:flex; gap:8px; align-items:center; margin-left:auto}
+  .advbar label{font-size:12px; color:#9aa0b5}
+  .advbar select, .advbar input{
+    background:#101020; color:#e7e7f7; border:1px solid rgba(255,255,255,.12);
+    border-radius:10px; padding:6px 8px; font-size:12px; width:auto;
+  }
+  .advbar input{width:60px; text-align:center}
+
+  .actions{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+  .btn{all:unset; cursor:pointer; padding:12px 16px; border-radius:12px; font-weight:800; letter-spacing:.3px;
+    background:linear-gradient(180deg, #6f57d9, #4832b3); box-shadow:var(--shadow)}
+  .btn[disabled]{opacity:.4; cursor:not-allowed}
+  .btn.ghost{background:#101020; border:1px solid rgba(255,255,255,.08); font-weight:700}
+
+  .result{display:flex; gap:14px; align-items:center; padding:12px 14px; border-radius:14px;
+    background:linear-gradient(180deg, rgba(76,217,100,.12), rgba(76,217,100,.05));
+    border:1px solid rgba(76,217,100,.25)}
+  .belt{font-size:18px}
+  .history{display:grid; gap:10px}
+  .tiny{font-size:12px; color:#9aa0b5}
+
+  .roundlog{display:grid; gap:6px; margin-top:10px}
+  .roundlog .r{background:#111325; border:1px solid rgba(255,255,255,.08);
+    padding:8px 10px; border-radius:10px; font-size:13px}
+  .badge{display:inline-block; padding:2px 8px; border-radius:999px; font-weight:800; font-size:11px; margin-left:8px}
+  .badge.win{background:#1e2f1e; color:#b5f7b5; border:1px solid #2f5f2f}
+
+  /* Readability tweaks */
+.card .nm{ color:#fff; }          /* names = pure white */
+.card .tag{ color:#c2c6d6; }      /* the sublabel = softer gray */
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+}
+.avatar {
+  width: 150px;
+  height: 150px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.card .nm {
+  color: white;
+  font-weight: 700;
+  text-align: center;
+  margin-top: 4px;
+}
+
+
+
+  @media (max-width:720px){ .picked{grid-template-columns:1fr} .advbar{width:100%; justify-content:flex-start; margin-left:0} }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">CFW</div>
+        <div class="title">
+          <h1>Match Randomizer</h1>
+          <p>Best of 5 • d20 rolls • Advantage/Disadvantage + Bonus</p>
+        </div>
+      </div>
+      <div class="controls panel">
+        <div class="seg" role="tablist" aria-label="Match type">
+          <button class="active" data-mode="singles" role="tab" aria-selected="true">Singles</button>
+          <button data-mode="tag" role="tab" aria-selected="false">Tag (2v2)</button>
+        </div>
+        <label class="chk"><input id="titleToggle" type="checkbox" /> Title Match</label>
+        <button class="btn ghost" id="clear">Clear Picks</button>
+      </div>
+    </header>
+
+    <section class="panel">
+      <h3 style="margin:0 0 12px">Roster</h3>
+      <div id="roster" class="roster"></div>
+    </section>
+
+    <section class="panel">
+      <div class="picked">
+        <div>
+          <h3 style="margin:0 0 10px">Corner A</h3>
+          <div id="cornerA" class="slot" aria-live="polite"><h4>Pick for this side</h4></div>
+          <div class="advbar">
+            <label for="advA">Adv:</label>
+            <select id="advA">
+              <option value="none">None</option>
+              <option value="adv">Advantage</option>
+              <option value="dis">Disadvantage</option>
+            </select>
+            <label for="bonusA">Bonus:</label>
+            <input id="bonusA" type="number" step="1" value="0" min="-5" max="10" />
+          </div>
+        </div>
+        <div>
+          <h3 style="margin:0 0 10px">Corner B</h3>
+          <div id="cornerB" class="slot" aria-live="polite"><h4>Pick for this side</h4></div>
+          <div class="advbar">
+            <label for="advB">Adv:</label>
+            <select id="advB">
+              <option value="none">None</option>
+              <option value="adv">Advantage</option>
+              <option value="dis">Disadvantage</option>
+            </select>
+            <label for="bonusB">Bonus:</label>
+            <input id="bonusB" type="number" step="1" value="0" min="-5" max="10" />
+          </div>
+        </div>
+      </div>
+      <div class="actions" style="margin-top:14px">
+        <button id="book" class="btn">Book the Match</button>
+        <span class="tiny">Singles needs 2 picks total. Tag needs 4 (2 per side).</span>
+      </div>
+    </section>
+
+    <section id="out" class="panel" aria-live="polite" style="display:none"></section>
+
+    <section class="panel">
+      <h3 style="margin:0 0 10px">History</h3>
+      <div id="history" class="history tiny"></div>
+    </section>
+  </div>
+
+<script>
+/* ---------- ROSTER DATA ---------- */
+const ROSTER = [
+  { name:"Jace Valor",      color:"#7dd3fc", short:"JV", img:"images/jace.jpg" },
+  { name:"Ace Dalton",      color:"#fda4af", short:"AD", img:"images/ace.jpg" },
+  { name:"Lena Wilde",      color:"#a78bfa", short:"LW", img:"images/lena.jpg" },
+  { name:"Brandi Blight",   color:"#f59e0b", short:"BB", img:"images/brandi.jpg" },
+  { name:"Sudio",           color:"#fb7185", short:"SU", img:"images/sudio.jpg" },
+  { name:"Shayna Vex",      color:"#34d399", short:"SV", img:"images/shayna.jpg" },
+  { name:"Águila Feral",    color:"#60a5fa", short:"AF", img:"images/feral.jpg" },
+  { name:"Dominic Hex",     color:"#f472b6", short:"DH", img:"images/hex.jpg" },
+  { name:"Reign Rokk",      color:"#f87171", short:"RR", img:"images/rokk.jpg" },
+  { name:"Alaric Green",    color:"#22d3ee", short:"AG", img:"images/green.jpg" },
+  { name:"Josh Conway",     color:"#c084fc", short:"JC", img:"images/josh.jpg"  },
+  { name:"Killjoy",         color:"#c084fc", short:"KJ", img:"images/killjoy.jpg" },
+  { name:"Dana Crush",      color:"#c084fc", short:"DC", img:"images/dana.jpg" },
+  { name:"Gale",            color:"#f472b6", short:"GA", img:"images/gale.jpg" },
+  { name:"Lucas Knox",      color:"#f87171", short:"LK", img:"images/lucas.jpg" },
+  { name:"Rokkit",          color:"#22d3ee", short:"RO", img:"images/rokkit.jpg" },
+  { name:"Chris Titan",     color:"#c084fc", short:"CS", img:"images/titan.jpg" },
+  { name:"Wyatt Storm",     color:"#c084fc", short:"WS", img:"images/storm.jpg" },
+  { name:"Lola Rose",       color:"#c084fc", short:"LR", img:"images/rose.jpg" },
+  { name:"Venessa Vale",    color:"#c084fc", short:"VV", img:"images/vale.jpg" },
+  { name:"Marisol Vela",    color:"#c084fc", short:"MV", img:"images/vela.jpg" },
+  { name:"MAR",             color:"#c084fc", short:"MA", img:"images/mar.jpg" },
+
+
+
+
+];
+
+let MODE = "singles";
+const state = { A:[], B:[] };
+
+const $ = sel => document.querySelector(sel);
+const rosterEl = $("#roster");
+const cornerA = $("#cornerA");
+const cornerB = $("#cornerB");
+const out = $("#out");
+const historyEl = $("#history");
+const titleToggle = $("#titleToggle");
+
+// Advantage controls
+const advA = $("#advA"), advB = $("#advB");
+const bonusA = $("#bonusA"), bonusB = $("#bonusB");
+
+/* ---------- UI RENDER ---------- */
+function renderRoster(){
+  rosterEl.innerHTML = "";
+  ROSTER.forEach((r, idx) => {
+    const card = document.createElement("button");
+    card.className = "card"; card.type = "button";
+    card.setAttribute("data-id", idx);
+    card.setAttribute("aria-selected", "false");
+ card.innerHTML = `
+  <div class="avatar" style="background:${r.color}">
+    ${r.img ? `<img src="${r.img}" alt="${r.name}" />` : r.short}
+  </div>
+      <div>
+        <div class="nm">${r.name}</div>
+        <div class="tag">CFW Roster</div>
+      </div>
+      <div class="sel-dot" aria-hidden="true"></div>
+    `;
+    card.addEventListener("click", () => togglePick(idx, card));
+    rosterEl.appendChild(card);
+  });
+}
+renderRoster();
+
+function maxPerSide(){ return MODE === "singles" ? 1 : 2; }
+function neededTotal(){ return MODE === "singles" ? 2 : 4; }
+
+function togglePick(idx, cardEl){
+  if (state.A.includes(idx) || state.B.includes(idx)){
+    state.A = state.A.filter(i => i!==idx);
+    state.B = state.B.filter(i => i!==idx);
+    cardEl.setAttribute("aria-selected","false");
+  } else {
+    if (state.A.length < maxPerSide()){ state.A.push(idx); cardEl.setAttribute("aria-selected","true"); }
+    else if (state.B.length < maxPerSide()){ state.B.push(idx); cardEl.setAttribute("aria-selected","true"); }
+    else { cardEl.animate([{transform:"translateY(0)"},{transform:"translateY(-3px)"},{transform:"translateY(0)"}],{duration:200}); }
+  }
+  renderSlots(); validateButton();
+}
+
+function renderSlots(){
+  const mkChip = (r) => `<span class="chip"><span class="sm" style="background:${r.color}">${r.short}</span>${r.name}</span>`;
+  cornerA.innerHTML = `<h4>${MODE==="singles"?"Competitor":"Team A"}</h4>` + state.A.map(i=>mkChip(ROSTER[i])).join("");
+  cornerB.innerHTML = `<h4>${MODE==="singles"?"Competitor":"Team B"}</h4>` + state.B.map(i=>mkChip(ROSTER[i])).join("");
+}
+function validateButton(){
+  const total = state.A.length + state.B.length;
+  $("#book").disabled = total !== neededTotal();
+}
+validateButton();
+
+/* ---------- DICE HELPERS ---------- */
+function rollD20(){ return Math.floor(Math.random()*20)+1; } // 1..20
+function rollWithAdv(kind){
+  const r1 = rollD20(), r2 = rollD20();
+  if (kind === "adv") return Math.max(r1, r2);
+  if (kind === "dis") return Math.min(r1, r2);
+  return r1;
+}
+function parseBonus(el){ return Number(el.value)||0; }
+
+function roundResultSingles(opts){
+  const { nameA, nameB, advA, advB, bonusA, bonusB } = opts;
+  let baseA = rollWithAdv(advA), baseB = rollWithAdv(advB);
+  let a = baseA + bonusA, b = baseB + bonusB;
+
+  let note = `${advA!=="none" ? `A ${advA} ` : ""}${advB!=="none" ? `B ${advB} ` : ""}`.trim();
+  if (bonusA) note += `${note?" • ":""}A bonus ${bonusA>=0?"+":""}${bonusA}`;
+  if (bonusB) note += `${note?" • ":""}B bonus ${bonusB>=0?"+":""}${bonusB}`;
+  if (note==="") note = "";
+
+  // tie: reroll singles clean (no adv/bonus to keep it snappy), but you can change that
+  if (a === b){
+    const ra = rollD20(), rb = rollD20();
+    note += `${note?" • ":""}tie ${a}-${b}, reroll ${ra}-${rb}`;
+    a = ra; b = rb;
+  }
+  if (baseA===20 || baseB===20) note += `${note?" • ":""}Nat 20!`;
+  if (baseA===1  || baseB===1 ) note += `${note?" • ":""}(1 rolled)`;
+
+  return { a, b, note, winner: (a>b) ? "A" : "B" };
+}
+
+function roundResultTag(opts){
+  const { advA, advB, bonusA, bonusB } = opts;
+  const a1 = rollWithAdv(advA), a2 = rollWithAdv(advA);
+  const b1 = rollWithAdv(advB), b2 = rollWithAdv(advB);
+  let a = a1 + a2 + bonusA, b = b1 + b2 + bonusB;
+  let note = `A(${a1}+${a2}${bonusA?`+${bonusA}`:""}) vs B(${b1}+${b2}${bonusB?`+${bonusB}`:""})`;
+  if (advA!=="none") note += ` • A ${advA}`;
+  if (advB!=="none") note += ` • B ${advB}`;
+  if ([a1,a2,b1,b2].includes(20)) note += ` • Nat 20!`;
+  if (a === b){
+    const ra = rollD20(), rb = rollD20();
+    note += ` • tie, sudden death ${ra}-${rb}`;
+    a = ra; b = rb;
+  }
+  return { a, b, note, winner: (a>b) ? "A" : "B" };
+}
+
+function bestOfFive(runRound){
+  const rounds = []; let scoreA = 0, scoreB = 0, r = 0;
+  while (scoreA < 3 && scoreB < 3){
+    r++;
+    const rr = runRound();
+    if (rr.winner === "A") scoreA++; else scoreB++;
+    rounds.push({ r, ...rr, scoreA, scoreB });
+  }
+  return { rounds, scoreA, scoreB, winnerSide: (scoreA>scoreB)?"A":"B" };
+}
+
+/* ---------- BOOK MATCH (Best of 5 + Adv) ---------- */
+function bookMatch(){
+  const isTitle = titleToggle.checked;
+  const mode = MODE;
+  out.style.display = "block";
+
+  const advKindA = advA.value, advKindB = advB.value;
+  const bA = parseBonus(bonusA), bB = parseBonus(bonusB);
+
+  if (mode === "singles"){
+    const A = ROSTER[state.A[0]];
+    const B = ROSTER[state.B[0]];
+    const series = bestOfFive(() =>
+      roundResultSingles({ nameA:A.name, nameB:B.name, advA:advKindA, advB:advKindB, bonusA:bA, bonusB:bB })
+    );
+    const winner = (series.winnerSide === "A") ? A : B;
+    const matchupText = `${A.name} vs ${B.name}`;
+    const winnerText  = `${winner.name} wins the series ${series.scoreA}-${series.scoreB}${isTitle ? " to retain/capture the CFW World Championship" : ""}.`;
+
+    out.innerHTML = `
+      <div class="result">
+        <div class="belt" aria-hidden="true">${isTitle ? "🏆" : "🎲"}</div>
+        <div>
+          <div style="font-weight:800; font-size:16px; margin-bottom:4px">${matchupText}</div>
+          <div style="color:#c7f9cc">${winnerText}</div>
+          <div class="tiny" style="margin-top:6px; color:var(--muted)">
+            Format: Best of 5 • d20 • A: ${advKindA}${bA?` ${bA>=0?"+":""}${bA}`:""} • B: ${advKindB}${bB?` ${bB>=0?"+":""}${bB}`:""}
+          </div>
+          <div class="roundlog">
+            ${series.rounds.map(({r,a,b,note,scoreA,scoreB,winner}) => `
+              <div class="r">
+                <strong>Round ${r}:</strong> ${A.name} <strong>${a}</strong> — ${B.name} <strong>${b}</strong>
+                ${note ? `<span class="tiny" style="margin-left:6px; color:#b5b9cd">${note}</span>` : ""}
+                <span class="badge win">${winner==="A"?A.name:B.name} takes it (${scoreA}-${scoreB})</span>
+              </div>`).join("")}
+          </div>
+        </div>
+      </div>
+    `;
+    const stamp = new Date().toLocaleString();
+    const line = document.createElement("div");
+    line.textContent = `[${stamp}] ${winnerText}`;
+    historyEl.prepend(line);
+
+  } else {
+    const teamA = state.A.map(i=>ROSTER[i]);
+    const teamB = state.B.map(i=>ROSTER[i]);
+    const tName = (t)=> t.map(x=>x.name).join(" & ");
+    const series = bestOfFive(() =>
+      roundResultTag({ advA:advKindA, advB:advKindB, bonusA:bA, bonusB:bB })
+    );
+    const winnerTeam = (series.winnerSide === "A") ? teamA : teamB;
+
+    const matchupText = `${tName(teamA)} vs ${tName(teamB)}`;
+    const winnerText  = `${tName(winnerTeam)} win the series ${series.scoreA}-${series.scoreB}${isTitle ? " to retain/capture the CFW Tag Team Championship" : ""}.`;
+
+    out.innerHTML = `
+      <div class="result">
+        <div class="belt" aria-hidden="true">${isTitle ? "🏆" : "🎲"}</div>
+        <div>
+          <div style="font-weight:800; font-size:16px; margin-bottom:4px">${matchupText}</div>
+          <div style="color:#c7f9cc">${winnerText}</div>
+          <div class="tiny" style="margin-top:6px; color:var(--muted)">
+            Format: Best of 5 • Team roll = (d20+d20) + bonus • A: ${advKindA}${bA?` ${bA>=0?"+":""}${bA}`:""} • B: ${advKindB}${bB?` ${bB>=0?"+":""}${bB}`:""}
+          </div>
+          <div class="roundlog">
+            ${series.rounds.map(({r,a,b,note,scoreA,scoreB,winner}) => `
+              <div class="r">
+                <strong>Round ${r}:</strong> Team A <strong>${a}</strong> — Team B <strong>${b}</strong>
+                <span class="tiny" style="margin-left:6px; color:#b5b9cd">${note}</span>
+                <span class="badge win">${winner==="A"?tName(teamA):tName(teamB)} take it (${scoreA}-${scoreB})</span>
+              </div>`).join("")}
+          </div>
+        </div>
+      </div>
+    `;
+    const stamp = new Date().toLocaleString();
+    const line = document.createElement("div");
+    line.textContent = `[${stamp}] ${winnerText}`;
+    historyEl.prepend(line);
+  }
+}
+
+/* ---------- CLEAR & MODE ---------- */
+function clearPicks(){
+  state.A = []; state.B = [];
+  rosterEl.querySelectorAll(".card[aria-selected='true']").forEach(el=>el.setAttribute("aria-selected","false"));
+  renderSlots(); validateButton(); out.style.display="none"; out.innerHTML="";
+}
+$("#book").addEventListener("click", bookMatch);
+$("#clear").addEventListener("click", clearPicks);
+document.querySelectorAll(".seg button").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll(".seg button").forEach(b=>{ b.classList.remove("active"); b.setAttribute("aria-selected","false"); });
+    btn.classList.add("active"); btn.setAttribute("aria-selected","true");
+    MODE = btn.dataset.mode; clearPicks();
+  });
+});
+</script>
+</body>
+</html>
