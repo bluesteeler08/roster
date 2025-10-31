@@ -135,6 +135,37 @@
     background:#0e0e16;                           /* quiet letterbox color */
     object-position: center;
   }
+  /* MOBILE FIX: stop the square crop and protect heads/faces */
+@media (max-width:640px){
+  .roster{ grid-template-columns: 1fr; }
+
+  .card{ align-items:flex-start; }
+
+  .avatar{
+    width: 36vw;                 /* flexible size on phones */
+    max-width: 180px;
+    aspect-ratio: 3 / 4;         /* portrait frame */
+    height: auto !important;     /* <-- overrides the 150px lock */
+  }
+  /* Option 1: no-crop (letterbox) */
+  .avatar img{
+    width:100%; height:100%;
+    object-fit: contain !important;   /* show entire image */
+    object-position: top center;      /* bias to faces */
+    background: #0b0b10;              /* subtle bars */
+    border-radius: 12px;
+    display:block;
+  }
+
+  /* If you prefer full-bleed crop instead, swap this block in:
+  .avatar img{
+    width:100%; height:100%;
+    object-fit: cover !important;
+    object-position: top center !important;  // keep heads in frame
+  }
+  */
+}
+
 }
 
 
@@ -472,4 +503,5 @@ document.querySelectorAll(".seg button").forEach(btn=>{
 </script>
 </body>
 </html>
+
 
