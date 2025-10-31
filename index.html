@@ -127,6 +127,17 @@
   border-radius: inherit;     /* match the container’s radius */
 }
 
+  /* put this AFTER your existing CSS */
+@media (max-width:600px){
+  .avatar{ aspect-ratio: 3 / 4; }                 /* taller frame feels natural for portraits */
+  .avatar img{
+    object-fit: contain;                          /* show entire image */
+    background:#0e0e16;                           /* quiet letterbox color */
+    object-position: center;
+  }
+}
+
+
 
 
 
@@ -461,3 +472,4 @@ document.querySelectorAll(".seg button").forEach(btn=>{
 </script>
 </body>
 </html>
+
