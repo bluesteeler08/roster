@@ -126,48 +126,22 @@
   object-fit: cover;          /* fill and crop, no stretching */
   border-radius: inherit;     /* match the container’s radius */
 }
-
-  /* put this AFTER your existing CSS */
-@media (max-width:600px){
-  .avatar{ aspect-ratio: 3 / 4; }                 /* taller frame feels natural for portraits */
-  .avatar img{
-    object-fit: contain;                          /* show entire image */
-    background:#0e0e16;                           /* quiet letterbox color */
-    object-position: center;
-  }
-  /* MOBILE FIX: stop the square crop and protect heads/faces */
-@media (max-width:640px){
-  .roster{ grid-template-columns: 1fr; }
-
-  .card{ align-items:flex-start; }
-
-  .avatar{
-    width: 36vw;                 /* flexible size on phones */
-    max-width: 180px;
-    aspect-ratio: 3 / 4;         /* portrait frame */
-    height: auto !important;     /* <-- overrides the 150px lock */
-  }
-  /* Option 1: no-crop (letterbox) */
-  .avatar img{
-    width:100%; height:100%;
-    object-fit: contain !important;   /* show entire image */
-    object-position: top center;      /* bias to faces */
-    background: #0b0b10;              /* subtle bars */
-    border-radius: 12px;
-    display:block;
-  }
-
-  /* If you prefer full-bleed crop instead, swap this block in:
-  .avatar img{
-    width:100%; height:100%;
-    object-fit: cover !important;
-    object-position: top center !important;  // keep heads in frame
-  }
-  */
+.logo-link {
+  display: inline-block;
 }
 
+.logo-img {
+  width: 85x;
+  height: 85px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s ease;
 }
 
+.logo-img:hover {
+  transform: scale(1.05);
+}
 
 
 
@@ -179,7 +153,10 @@
   <div class="wrap">
     <header>
       <div class="brand">
-        <div class="logo">CFW</div>
+        <a href="https://creativeforcewrestling.com" class="logo-link">
+  <img src="images/cfwlogo.jpg" alt="Creative Force Wrestling" class="logo-img">
+</a>
+
         <div class="title">
           <h1>Match Randomizer</h1>
           <p>Best of 5 • d20 rolls • Advantage/Disadvantage + Bonus</p>
@@ -503,5 +480,3 @@ document.querySelectorAll(".seg button").forEach(btn=>{
 </script>
 </body>
 </html>
-
-
