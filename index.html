@@ -12,18 +12,23 @@
     --radius: 18px;
   }
   *{box-sizing:border-box}
-  body{margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Arial; color:var(--ink);
+  body{
+    margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Arial; color:var(--ink);
     background: radial-gradient(1200px 600px at 50% -10%, #1e1e2a 0%, #0b0b10 55%);
-    min-height:100dvh; padding:24px;}
+    min-height:100dvh; padding:24px;
+
+  }
   .wrap{max-width:1100px; margin:0 auto; display:grid; gap:22px;}
-  header{display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap}
+  header{display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-top: 30px;}
   .brand{display:flex; align-items:center; gap:14px}
   .logo{width:46px; height:46px; background:conic-gradient(from 220deg, var(--accent), var(--accent-2));
     border-radius:12px; box-shadow:var(--shadow); display:grid; place-items:center; font-weight:800; letter-spacing:.5px; color:#0b0b10}
   .title h1{margin:0; font-size:22px}
   .title p{margin:2px 0 0; color:var(--muted); font-size:13px}
-  .panel{background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0));
-    border:1px solid rgba(255,255,255,.06); border-radius:var(--radius); padding:16px; box-shadow:var(--shadow)}
+  .panel{
+    background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0));
+    border:1px solid rgba(255,255,255,.06); border-radius:var(--radius); padding:16px; box-shadow:var(--shadow)
+  }
   .controls{display:flex; gap:14px; align-items:center; flex-wrap:wrap}
   .seg{display:inline-grid; grid-auto-flow:column; gap:6px; background:#0e0e16; padding:6px; border-radius:999px; border:1px solid rgba(255,255,255,.06)}
   .seg button{all:unset; cursor:pointer; padding:8px 14px; border-radius:999px; color:#9aa0b5; font-weight:600; font-size:14px}
@@ -31,15 +36,34 @@
   .chk{display:flex; align-items:center; gap:8px; color:var(--muted); font-size:14px}
   .chk input{width:18px; height:18px; accent-color:var(--accent)}
 
-  .roster{display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:14px}
-  .card{position:relative; padding:12px; background:#151521; border-radius:16px; border:1px solid rgba(255,255,255,.08);
-    transition:.15s transform; cursor:pointer; display:flex; gap:12px; align-items:center}
+  .roster{display:grid; grid-template-columns:repeat(auto-fill, minmax(166px,1fr)); gap:14px}
+  .card{
+    position:relative; padding:12px; background:#151521; border-radius:16px; border:1px solid rgba(255,255,255,.08);
+    transition:.15s transform; cursor:pointer; display:flex; gap:12px; align-items:center; flex-direction:column;
+  }
   .card:hover{transform:translateY(-2px)}
-  .avatar{width:150px; height:150px; border-radius:12px; display:grid; place-items:center; font-weight:800;
-    color:#0b0b10; box-shadow:inset 0 0 0 2px rgba(255,255,255,.08)}
-  .avatar img{width:100%; height:100%; object-fit:cover; border-radius:12px; display:block}
-  .nm{font-weight:700; font-size:14px}
-  .tag{font-size:11px; color:#9aa0b5}
+  
+/* The square image frame */
+.avatar{
+  width: 100%;
+  aspect-ratio: 1 / 1;       /* perfect square */
+  border-radius: 16px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  transform: scale(1.05);
+}
+
+/* Force the photo to fill the frame */
+.avatar img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;          /* crop to fill */
+  display: block;             /* kill inline gaps */
+}
+
+  .nm{font-weight:700; font-size:14px; color:#fff; text-align:center; margin-top:4px}
+  .tag{font-size:11px; color:#c2c6d6}
   .sel-dot{position:absolute; top:8px; right:8px; width:18px; height:18px; border-radius:50%;
     background:transparent; border:2px solid rgba(255,255,255,.25)}
   .card[aria-selected="true"] .sel-dot{background:var(--ok); border-color:transparent; box-shadow:0 0 0 2px rgba(76,217,100,.3)}
@@ -79,84 +103,72 @@
   .badge{display:inline-block; padding:2px 8px; border-radius:999px; font-weight:800; font-size:11px; margin-left:8px}
   .badge.win{background:#1e2f1e; color:#b5f7b5; border:1px solid #2f5f2f}
 
-  /* Readability tweaks */
-.card .nm{ color:#fff; }          /* names = pure white */
-.card .tag{ color:#c2c6d6; }      /* the sublabel = softer gray */
+  /* Home logo link (top-left) */
+  .logo-link { display:inline-block; }
+  .logo-img {
+    width: 85px; height: 85px; border-radius: 50%; object-fit: cover;
+    box-shadow: var(--shadow); transition: transform 0.2s ease;
+  }
+  .logo-img:hover { transform: scale(1.05); }
 
-.avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 12px;
-  display: block;
+  /* Profile mini link (blue text + purple hover + glow dot) */
+.mini-link{
+  font-size:11px;
+  color:#7ef3ff;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  transition:color .15s ease, text-shadow .15s ease;
 }
-.card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  padding: 12px;
+.mini-link:hover{
+  color:#d5b6ff;
+  text-shadow:0 0 10px rgba(200,150,255,.9), 0 0 4px rgba(180,100,255,.6);
 }
-.avatar {
-  width: 150px;
-  height: 150px;
-  border-radius: 10px;
-  overflow: hidden;
-}
-.card .nm {
-  color: white;
-  font-weight: 700;
-  text-align: center;
-  margin-top: 4px;
-}
-/* Avatar frame */
-.avatar{
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  border-radius: 16px;        /* match whatever you use now */
-  overflow: hidden;           /* <— clips img to the rounded box */
-  position: relative;
-}
-
-/* Make the image fill and not leave edges */
-.avatar img{
-  width: 100%;
-  height: 100%;
-  display: block;             /* removes tiny inline gaps */
-  object-fit: cover;          /* fill and crop, no stretching */
-  border-radius: inherit;     /* match the container’s radius */
-}
-.logo-link {
-  display: inline-block;
-}
-
-.logo-img {
-  width: 85x;
-  height: 85px;
-  border-radius: 50%;
-  object-fit: cover;
-  box-shadow: var(--shadow);
-  transition: transform 0.2s ease;
-}
-
-.logo-img:hover {
-  transform: scale(1.05);
+.mini-dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:#b26fff;
+  box-shadow:0 0 10px 2px rgba(180,100,255,.7);
 }
 
 
+  @media (max-width:720px){
+    .picked{grid-template-columns:1fr}
+    .advbar{width:100%; justify-content:flex-start; margin-left:0}
+  }
+  /* --- Layout containment fix --- */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;   /* prevents side scrolling */
+  max-width: 100%;
+}
 
+/* Ensure main wrapper never exceeds the screen width */
+.container, .wrapper, main {
+  max-width: 100vw;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+html, body { margin:0; padding:0; overflow-x:hidden; max-width:100%; }
+.container, .wrapper, main { max-width:100vw; overflow-x:hidden; box-sizing:border-box; }
+.avatar{ width:100%; aspect-ratio:1/1; border-radius:16px; overflow:hidden; display:grid; place-items:center; }
+.avatar img{ width:100%; height:100%; object-fit:cover; display:block; }
 
-  @media (max-width:720px){ .picked{grid-template-columns:1fr} .advbar{width:100%; justify-content:flex-start; margin-left:0} }
+  
 </style>
 </head>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <body>
+  
   <div class="wrap">
     <header>
       <div class="brand">
         <a href="https://creativeforcewrestling.com" class="logo-link">
-  <img src="images/cfwlogo.jpg" alt="Creative Force Wrestling" class="logo-img">
-</a>
-
+          <img src="images/cfwlogo.jpg" alt="Creative Force Wrestling" class="logo-img">
+        </a>
         <div class="title">
           <h1>Match Randomizer</h1>
           <p>Best of 5 • d20 rolls • Advantage/Disadvantage + Bonus</p>
@@ -224,11 +236,13 @@
 
 <script>
 /* ---------- ROSTER DATA ---------- */
+/* Add profile:"https://shows.creativeforcewrestling.com/profiles/name.pdf"
+   to any entry below to make their card show the blue ● Profile link. */
 const ROSTER = [
-  { name:"Jace Valor",      color:"#7dd3fc", short:"JV", img:"images/jace.jpg" },
-  { name:"Ace Dalton",      color:"#fda4af", short:"AD", img:"images/ace.jpg" },
-  { name:"Lena Wilde",      color:"#a78bfa", short:"LW", img:"images/lena.jpg" },
-  { name:"Brandi Blight",   color:"#f59e0b", short:"BB", img:"images/brandi.jpg" },
+  { name:"Jace Valor",      color:"#7dd3fc", short:"JV", img:"images/jace.jpg", profile:"https://roster.creativeforcewrestling.com/jace_valor.pdf"},
+  { name:"Ace Dalton",      color:"#fda4af", short:"AD", img:"images/ace.jpg", profile:"https://roster.creativeforcewrestling.com/ace_dalton.pdf" },
+  { name:"Lena Wilde",      color:"#a78bfa", short:"LW", img:"images/lena.jpg", profile:"https://roster.creativeforcewrestling.com/lena_wilde.pdf"  },
+  { name:"Brandi Blight",   color:"#f59e0b", short:"BB", img:"images/brandi.jpg", profile:"https://roster.creativeforcewrestling.com/brandi_blight.pdf"  },
   { name:"Sudio",           color:"#fb7185", short:"SU", img:"images/sudio.jpg" },
   { name:"Shayna Vex",      color:"#34d399", short:"SV", img:"images/shayna.jpg" },
   { name:"Águila Feral",    color:"#60a5fa", short:"AF", img:"images/feral.jpg" },
@@ -247,10 +261,6 @@ const ROSTER = [
   { name:"Venessa Vale",    color:"#c084fc", short:"VV", img:"images/vale.jpg" },
   { name:"Marisol Vela",    color:"#c084fc", short:"MV", img:"images/vela.jpg" },
   { name:"MAR",             color:"#c084fc", short:"MA", img:"images/mar.jpg" },
-
-
-
-
 ];
 
 let MODE = "singles";
@@ -276,17 +286,32 @@ function renderRoster(){
     card.className = "card"; card.type = "button";
     card.setAttribute("data-id", idx);
     card.setAttribute("aria-selected", "false");
- card.innerHTML = `
-  <div class="avatar" style="background:${r.img ? 'transparent' : r.color}">
-    ${r.img ? `<img src="${r.img}" alt="${r.name}" />` : r.short}
-  </div>
+
+    // build sublabel: Profile link if present, otherwise CFW Roster
+    const sub = r.profile
+      ? `<div class="tag">
+           <a class="mini-link" href="${r.profile}" target="_blank" rel="noopener">
+             <span class="mini-dot" aria-hidden="true"></span>Profile
+           </a>
+         </div>`
+      : `<div class="tag">CFW Roster</div>`;
+
+    card.innerHTML = `
+      <div class="avatar" style="background:${r.img ? 'transparent' : r.color}">
+        ${r.img ? `<img src="${r.img}" alt="${r.name}" />` : r.short}
+      </div>
       <div>
         <div class="nm">${r.name}</div>
-        <div class="tag">CFW Roster</div>
+        ${sub}
       </div>
       <div class="sel-dot" aria-hidden="true"></div>
     `;
+
+    // prevent the profile link from toggling selection
     card.addEventListener("click", () => togglePick(idx, card));
+    const link = card.querySelector(".mini-link");
+    if (link) link.addEventListener("click", (e)=> e.stopPropagation());
+
     rosterEl.appendChild(card);
   });
 }
@@ -339,7 +364,6 @@ function roundResultSingles(opts){
   if (bonusB) note += `${note?" • ":""}B bonus ${bonusB>=0?"+":""}${bonusB}`;
   if (note==="") note = "";
 
-  // tie: reroll singles clean (no adv/bonus to keep it snappy), but you can change that
   if (a === b){
     const ra = rollD20(), rb = rollD20();
     note += `${note?" • ":""}tie ${a}-${b}, reroll ${ra}-${rb}`;
