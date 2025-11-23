@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XNRKS0V16H"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-XNRKS0V16H');
+</script>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>CFW Match Randomizer — Best of 5 (d20) + Advantage</title>
+<style>
+  :root{
+    --bg:#0b0b10; --card:#151521; --ink:#e7e7f7; --muted:#9aa0b5;
+    --accent:#A97DF0; --accent-2:#F0B37D; --ok:#4cd964;
+    --shadow: 0 10px 30px rgba(0,0,0,.35), 0 2px 10px rgba(0,0,0,.3);
+    --radius: 18px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Arial; color:var(--ink);
+    background: radial-gradient(1200px 600px at 50% -10%, #1e1e2a 0%, #0b0b10 55%);
+    min-height:100dvh; padding:24px;
+
+  }
+  .wrap{max-width:1100px; margin:0 auto; display:grid; gap:22px;}
+  header{display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-top: 30px;}
+  .brand{display:flex; align-items:center; gap:14px}
+  .logo{width:46px; height:46px; background:conic-gradient(from 220deg, var(--accent), var(--accent-2));
+    border-radius:12px; box-shadow:var(--shadow); display:grid; place-items:center; font-weight:800; letter-spacing:.5px; color:#0b0b10}
+  .title h1{margin:0; font-size:22px}
+  .title p{margin:2px 0 0; color:var(--muted); font-size:13px}
+  .panel{
+    background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0));
+    border:1px solid rgba(255,255,255,.06); border-radius:var(--radius); padding:16px; box-shadow:var(--shadow)
+  }
+  .controls{display:flex; gap:14px; align-items:center; flex-wrap:wrap}
+  .seg{display:inline-grid; grid-auto-flow:column; gap:6px; background:#0e0e16; padding:6px; border-radius:999px; border:1px solid rgba(255,255,255,.06)}
+  .seg button{all:unset; cursor:pointer; padding:8px 14px; border-radius:999px; color:#9aa0b5; font-weight:600; font-size:14px}
+  .seg button.active{background:linear-gradient(180deg,#26263a,#1a1a2a); color:var(--ink); box-shadow:var(--shadow)}
+  .chk{display:flex; align-items:center; gap:8px; color:var(--muted); font-size:14px}
+  .chk input{width:18px; height:18px; accent-color:var(--accent)}
+
+  .roster{display:grid; grid-template-columns:repeat(auto-fill, minmax(166px,1fr)); gap:14px}
+  .card{
+    position:relative; padding:12px; background:#151521; border-radius:16px; border:1px solid rgba(255,255,255,.08);
+    transition:.15s transform; cursor:pointer; display:flex; gap:12px; align-items:center; flex-direction:column;
+  }
+  .card:hover{transform:translateY(-2px)}
+  
+/* The square image frame */
+.avatar{
+  width: 100%;
+  aspect-ratio: 1 / 1;       /* perfect square */
+  border-radius: 16px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  transform: scale(1.05);
+}
+
+/* Force the photo to fill the frame */
+.avatar img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;          /* crop to fill */
+  display: block;             /* kill inline gaps */
+}
+
+  .nm{font-weight:700; font-size:14px; color:#fff; text-align:center; margin-top:4px}
+  .tag{font-size:11px; color:#c2c6d6}
+  .sel-dot{position:absolute; top:8px; right:8px; width:18px; height:18px; border-radius:50%;
+    background:transparent; border:2px solid rgba(255,255,255,.25)}
+  .card[aria-selected="true"] .sel-dot{background:var(--ok); border-color:transparent; box-shadow:0 0 0 2px rgba(76,217,100,.3)}
+
+  .picked{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+  .slot{min-height:84px; border:1px dashed rgba(255,255,255,.18); border-radius:14px; padding:10px;
+    display:flex; gap:10px; align-items:center; background:rgba(255,255,255,.02); flex-wrap:wrap}
+  .slot h4{margin:0 0 6px; font-size:13px; color:#9aa0b5; font-weight:600}
+  .chip{display:inline-flex; align-items:center; gap:8px; padding:8px 10px; border-radius:12px;
+    background:#1d1d2b; border:1px solid rgba(255,255,255,.08); font-size:13px; margin-right:8px}
+  .sm{width:24px; height:24px; border-radius:6px; display:grid; place-items:center; color:#0b0b10; font-weight:800}
+
+  .advbar{display:flex; gap:8px; align-items:center; margin-left:auto}
+  .advbar label{font-size:12px; color:#9aa0b5}
+  .advbar select, .advbar input{
+    background:#101020; color:#e7e7f7; border:1px solid rgba(255,255,255,.12);
+    border-radius:10px; padding:6px 8px; font-size:12px; width:auto;
+  }
+  .advbar input{width:60px; text-align:center}
+
+  .actions{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+  .btn{all:unset; cursor:pointer; padding:12px 16px; border-radius:12px; font-weight:800; letter-spacing:.3px;
+    background:linear-gradient(180deg, #6f57d9, #4832b3); box-shadow:var(--shadow)}
+  .btn[disabled]{opacity:.4; cursor:not-allowed}
+  .btn.ghost{background:#101020; border:1px solid rgba(255,255,255,.08); font-weight:700}
+
+  .result{display:flex; gap:14px; align-items:center; padding:12px 14px; border-radius:14px;
+    background:linear-gradient(180deg, rgba(76,217,100,.12), rgba(76,217,100,.05));
+    border:1px solid rgba(76,217,100,.25)}
+  .belt{font-size:18px}
+  .history{display:grid; gap:10px}
+  .tiny{font-size:12px; color:#9aa0b5}
+
+  .roundlog{display:grid; gap:6px; margin-top:10px}
+  .roundlog .r{background:#111325; border:1px solid rgba(255,255,255,.08);
+    padding:8px 10px; border-radius:10px; font-size:13px}
+  .badge{display:inline-block; padding:2px 8px; border-radius:999px; font-weight:800; font-size:11px; margin-left:8px}
+  .badge.win{background:#1e2f1e; color:#b5f7b5; border:1px solid #2f5f2f}
+
+  /* Home logo link (top-left) */
+  .logo-link { display:inline-block; }
+  .logo-img {
+    width: 85px; height: 85px; border-radius: 50%; object-fit: cover;
+    box-shadow: var(--shadow); transition: transform 0.2s ease;
+  }
+  .logo-img:hover { transform: scale(1.05); }
+
+  /* Profile mini link (blue text + purple hover + glow dot) */
+.mini-link{
+  font-size:11px;
+  color:#7ef3ff;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  transition:color .15s ease, text-shadow .15s ease;
+}
+.mini-link:hover{
+  color:#d5b6ff;
+  text-shadow:0 0 10px rgba(200,150,255,.9), 0 0 4px rgba(180,100,255,.6);
+}
+.mini-dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:#b26fff;
+  box-shadow:0 0 10px 2px rgba(180,100,255,.7);
+}
+
+
+  @media (max-width:720px){
+    .picked{grid-template-columns:1fr}
+    .advbar{width:100%; justify-content:flex-start; margin-left:0}
+  }
+  /* --- Layout containment fix --- */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;   /* prevents side scrolling */
+  max-width: 100%;
+}
+
+/* Ensure main wrapper never exceeds the screen width */
+.container, .wrapper, main {
+  max-width: 100vw;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+html, body { margin:0; padding:0; overflow-x:hidden; max-width:100%; }
+.container, .wrapper, main { max-width:100vw; overflow-x:hidden; box-sizing:border-box; }
+.avatar{ width:100%; aspect-ratio:1/1; border-radius:16px; overflow:hidden; display:grid; place-items:center; }
+.avatar img{ width:100%; height:100%; object-fit:cover; display:block; }
+.titlebar {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.titlebar h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.subnav-inline a {
+  font-size: 0.95rem;
+  color: #ffffff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.subnav-inline a:hover {
+  color: #c084fc; /* purple hover */
+}
+.page-title {
+  margin: 0;              /* keep your title height tight */
+  line-height: 1.1;
+}
+
+.page-title .subnav-inline {
+  font-size: 0.95rem;     /* smaller than the title */
+  font-weight: 500;
+  margin-left: 14px;      /* space after "Match Randomizer" */
+  white-space: nowrap;    /* keep it on one line */
+}
+
+.page-title .subnav-inline a {
+  color: #ffffff;         /* white links */
+  text-decoration: none;
+  transition: color .25s ease;
+}
+
+.page-title .subnav-inline a:hover {
+  color: #c084fc;         /* purple hover */
+}
+
+
+
+  
+</style>
+</head>
+  <!-- Basic Meta -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0d0d0f">
+
+  <!-- SEO -->
+  <title>Battle Royal</title>
+  <meta name="description" content="Pick wrestlers from the Creative Force Wrestling roster and let the dice decide who wins. Story-first wrestling roleplay meets chance.">
+  <meta property="og:title" content="CFW Roster & Match Randomizer">
+  <meta property="og:description" content="Pick wrestlers and let the d20 decide the outcome. Story-first wrestling roleplay meets dice-based chaos.">
+  <meta property="og:image" content="https://creativeforcewrestling.com/images/cfwlogo.jpg">
+  <meta property="og:url" content="https://roster.creativeforcewrestling.com/">
+  <meta property="og:type" content="website">
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="favicon.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
+  <link rel="icon" type="image/png" sizes="128x128" href="favicon.png">
+  <link rel="icon" type="image/png" sizes="256x256" href="favicon.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="favicon.png">
+  <link rel="shortcut icon" href="favicon.png">
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <a href="https://creativeforcewrestling.com" class="logo-link">
+          <img src="images/cfwlogo.jpg" alt="Creative Force Wrestling" class="logo-img">
+        </a>
+        <div class="title">
+          <h1 class="page-title">
+            Battle Royal Simulator
+            <span class="subnav-inline">
+              <a href="https://creativeforcewrestling.com/">Home</a> |
+                <a href="https://roster.creativeforcewrestling.com/">Roster</a> |
+                <a href="https://shows.creativeforcewrestling.com/">Show Archive</a>
+            </span>
+          </h1>
+          <p class="subtitle">
+            Press <strong>Begin Royal</strong>, then keep hitting <strong>Next Elimination</strong> 
+            until there’s <strong>one winner left standing</strong>. 
+           
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="panel">
+        <h3 style="margin:0 0 12px">Battle Royal Entrants</h3>
+        <p class="tiny" style="margin:0 0 10px; color:var(--muted)">
+          All <strong>Player</strong> entrants have equal odds. 
+        </p>
+        <div id="roster" class="roster"></div>
+      </section>
+
+      <section class="panel">
+        <h3 style="margin:0 0 8px">Battle Royal Log</h3>
+        <p class="tiny" style="margin:0 0 12px; color:var(--muted)">
+          1) Click <strong>Begin Royal</strong> to start.<br>
+          2) Click <strong>Next Elimination</strong> to toss one wrestler at a time.<br>
+          3) Continue until the simulator announces the <strong>Winner of the Royal</strong>.
+        </p>
+
+        <div style="display:flex; gap:8px; margin-bottom:10px; align-items:center; flex-wrap:wrap">
+          <button class="btn" id="startRoyal">Begin Royal</button>
+          <button class="btn ghost" id="nextElimination" disabled>Next Elimination</button>
+          <button class="btn ghost" id="resetRoyal">Reset</button>
+          <span class="tiny" style="color:var(--muted)" id="remainingLabel">
+            Entrants remaining: —
+          </span>
+        </div>
+
+        <div id="log" class="history" style="max-height:380px; overflow:auto; border-radius:12px; background:rgba(0,0,0,.28); padding:10px; font-size:13px">
+          <!-- log lines will go here -->
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Small helper like on your current page
+    const $ = sel => document.querySelector(sel);
+    const $$ = sel => Array.from(document.querySelectorAll(sel));
+
+    /* 
+      ENTRANTS CONFIG
+      ---------------
+      - type: "player"  => real players (equal odds among themselves, BEST odds overall)
+      - type: "filler"  => fodder / prospects / NPCs (more likely to get eliminated)
+      - short: 2–3 letter code for the chip
+      - img: use your character PNGs / portraits; can be blank if you want
+    */
+    const ENTRANTS = [
+      // === EXAMPLES: REAL PLAYERS ===
+      { name: "Swanny",   short: "P1", img: "images/swanny.jpg", type: "player" },
+      { name: "Josh Conway",   short: "P2", img: "images/josh.jpg", type: "player" },
+      { name: "Player Three", short: "P3", img: "images/ent.jpg", type: "player" },
+      { name: "Player Four",  short: "P4", img: "images/ent.jpg", type: "player" },
+      { name: "Player Five",  short: "P5", img: "images/ent.jpg", type: "player" },
+      { name: "Player Six",   short: "P6", img: "images/ent.jpg", type: "player" },
+
+      // === EXAMPLES: FILLER / PROSPECTS ===
+      
+  
+      { name: "Dominic Hex", short: "RD", img: "images/hex.jpg", type: "filler" },
+      { name: "Ronnie Kixx", short: "RC", img: "images/kixx.jpg", type: "filler" },
+      { name: "Wendell Grimes", short: "RF", img: "images/grimes.jpg", type: "filler" },
+      { name: "Nico Blaze", short: "RA", img: "images/nico.jpg", type: "filler" },
+      { name: "Chris Titan", short: "RE", img: "images/titan.jpg", type: "filler" },
+      { name: "Gunner Wade", short: "RB", img: "images/wade.jpg", type: "filler" },
+
+
+      // 👉 Add as many as you want. Just follow this format.
+      // { name:"Your Discord User", short:"XX", img:"images/your_image.jpg", type:"player" },
+      // { name:"NPC Name", short:"NP", img:"images/filler.jpg", type:"filler" },
+    ];
+
+    // Weight config: LOWER weight = SAFER.
+    // Fillers have higher weight = more likely to be eliminated.
+    const WEIGHT_PLAYER = 1;
+    const WEIGHT_FILLER = 3;
+
+    // State
+    let alive = [];           // indices of ENTRANTS still in
+    let eliminationOrder = []; // indices in the order they got tossed
+    let royalStarted = false;
+    let royalFinished = false;
+
+    const rosterEl = $("#roster");
+    const logEl = $("#log");
+    const remainingLabel = $("#remainingLabel");
+    const startBtn = $("#startRoyal");
+    const nextBtn = $("#nextElimination");
+    const resetBtn = $("#resetRoyal");
+
+    function entrantWeight(idx){
+      return ENTRANTS[idx].type === "filler" ? WEIGHT_FILLER : WEIGHT_PLAYER;
+    }
+
+    function renderRoster(){
+      rosterEl.innerHTML = "";
+      ENTRANTS.forEach((r, idx) => {
+        const card = document.createElement("button");
+        card.className = "card";
+        card.type = "button";
+        card.dataset.index = idx;
+
+        const tagText = r.type === "player" ? "Player Entrant" : "NPC";
+
+        card.innerHTML = `
+          <div class="avatar">
+            ${r.img 
+              ? `<img src="${r.img}" alt="${r.name}">`
+              : `<div class="initials" style="
+                  width:100%;height:100%;
+                  display:flex;align-items:center;justify-content:center;
+                  font-weight:800;font-size:24px;
+                  background:rgba(255,255,255,.05);
+                ">
+                  ${r.short || r.name.slice(0,2).toUpperCase()}
+                </div>`
+            }
+      
+          </div>
+          <div class="nm">${r.name}</div>
+          <div class="tag">${tagText}</div>
+        `;
+        rosterEl.appendChild(card);
+      });
+    }
+
+    function setCardState(idx, state){
+      const card = rosterEl.querySelector(`.card[data-index="${idx}"]`);
+      if (!card) return;
+
+      if (state === "alive"){
+        card.style.opacity = "1";
+        card.style.outline = "none";
+        card.style.filter = "none";
+        card.classList.remove("winner");
+      } else if (state === "eliminated"){
+        card.style.opacity = "0.35";
+        card.style.filter = "grayscale(0.7)";
+        card.style.outline = "2px solid rgba(248,113,113,.75)"; // red-ish
+      } else if (state === "winner"){
+        card.style.opacity = "1";
+        card.style.filter = "none";
+        card.style.outline = "2px solid var(--accent-2)";
+        card.classList.add("winner");
+      }
+    }
+
+    function resetState(){
+      alive = ENTRANTS.map((_, idx) => idx);
+      eliminationOrder = [];
+      royalStarted = false;
+      royalFinished = false;
+      logEl.innerHTML = "";
+      alive.forEach(idx => setCardState(idx, "alive"));
+      updateRemaining();
+      nextBtn.disabled = true;
+    }
+
+    function updateRemaining(){
+      if (!alive.length){
+        remainingLabel.textContent = "Entrants remaining: —";
+      } else {
+        remainingLabel.textContent = `Entrants remaining: ${alive.length}`;
+      }
+    }
+
+    function logLine(text){
+      const line = document.createElement("div");
+      line.textContent = text;
+      logEl.appendChild(line);
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    function weightedRandomIndex(){
+      // Build weights for the currently-alive pool
+      const pool = alive;
+      const weights = pool.map(idx => entrantWeight(idx));
+      const total = weights.reduce((a,b)=>a+b, 0);
+
+      let pick = Math.random() * total;
+      for (let i = 0; i < pool.length; i++){
+        if (pick < weights[i]){
+          return pool[i];
+        }
+        pick -= weights[i];
+      }
+      // Fallback; shouldn't happen
+      return pool[pool.length - 1];
+    }
+
+    function startRoyal(){
+      if (royalStarted && !royalFinished) return;
+      resetState();
+      royalStarted = true;
+      logLine(`Battle Royal begins with ${alive.length} entrants!`);
+      nextBtn.disabled = false;
+    }
+
+    function nextElimination(){
+      if (!royalStarted || royalFinished) return;
+      if (alive.length <= 1){
+        return;
+      }
+
+      // Pick elimination target
+      const elimIdx = weightedRandomIndex();
+      const elimName = ENTRANTS[elimIdx].name;
+
+      // Remove from alive pool
+      alive = alive.filter(i => i !== elimIdx);
+      eliminationOrder.push(elimIdx);
+      setCardState(elimIdx, "eliminated");
+
+      logLine(`#${eliminationOrder.length} eliminated: ${elimName}`);
+      updateRemaining();
+
+      if (alive.length === 1){
+        const winnerIdx = alive[0];
+        const winnerName = ENTRANTS[winnerIdx].name;
+        setCardState(winnerIdx, "winner");
+        logLine(`🏆 WINNER OF THE ROYAL: ${winnerName}`);
+        royalFinished = true;
+        nextBtn.disabled = true;
+      }
+    }
+
+    // Wire up buttons
+    startBtn.addEventListener("click", startRoyal);
+    nextBtn.addEventListener("click", nextElimination);
+    resetBtn.addEventListener("click", resetState);
+
+    // Initial render
+    renderRoster();
+    resetState();
+  </script>
+</body>
+</html>
