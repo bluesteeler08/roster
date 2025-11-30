@@ -208,6 +208,163 @@ html, body { margin:0; padding:0; overflow-x:hidden; max-width:100%; }
   color: #c084fc;         /* purple hover */
 }
 
+ /* Extra styling for How To Play content */
+    .lead {
+      color: var(--muted);
+      max-width: 720px;
+      margin-top: 10px;
+    }
+
+    .badge-inline {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size:0.88rem;
+      padding:3px 9px;
+      border-radius:999px;
+      border:1px solid #323248;
+      background:#101018;
+      color:var(--muted);
+    }
+
+    .badge-inline span.emoji {
+      font-size:1rem;
+    }
+
+    /* --- FORM STYLING (CLEANED & UNIFIED) --- */
+
+    form {
+      margin-top: 10px;
+      display: grid;
+      gap: 12px;
+    }
+
+    label {
+      font-size: 0.9rem;
+      color: var(--muted);
+      display:block;
+      margin-bottom:4px;
+    }
+
+    form input,
+    form select,
+    form textarea {
+      width: 100%;
+      padding: 10px 11px;
+      border-radius: 10px;
+      border: 1px solid rgba(140,170,210,0.7);  /* brighter, matches card vibe */
+      background: #050509;
+      color: var(--ink);
+      font: 0.95rem/1.5 Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      outline: none;
+      transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+
+    form input:focus,
+    form select:focus,
+    form textarea:focus {
+      border-color: rgba(180,210,255,0.95);
+      box-shadow:0 0 0 1px rgba(160,195,255,.4);
+      background:#141422;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .form-row {
+      display:grid;
+      gap:10px;
+    }
+
+    @media (min-width: 720px) {
+      .form-row.two {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    .submit-row {
+
+      display:flex;
+      justify-content:flex-start;
+    }
+
+    button[type="submit"] {
+      border:none;
+      border-radius:999px;
+      padding:9px 18px;
+      font-weight:600;
+      font-size:0.95rem;
+      cursor:pointer;
+      background:linear-gradient(135deg,#7ef3ff,#b26fff);
+      color:#050509;
+      box-shadow:0 10px 25px rgba(0,0,0,.4);
+      transition:transform .1s ease, box-shadow .1s ease, filter .1s ease;
+    }
+
+    button[type="submit"]:hover {
+      transform:translateY(-1px);
+      filter:brightness(1.05);
+      box-shadow:0 14px 30px rgba(0,0,0,.45);
+    }
+
+    button[type="submit"]:active {
+      transform:translateY(1px);
+      box-shadow:0 7px 14px rgba(0,0,0,.35);
+    }
+
+    .helper-text {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    /* POP card styling */
+    .card.style-pop {
+      background:
+        radial-gradient(circle at top right, rgba(150,190,255,0.20), transparent 65%),
+        radial-gradient(circle at bottom left, rgba(170,210,255,0.18), transparent 60%),
+        linear-gradient(140deg, rgba(55,70,100,0.60), rgba(30,40,60,0.60));
+      border: 1px solid rgba(165,200,255,0.25);
+      border-radius: 14px;
+      backdrop-filter: blur(2px);
+    }
+    /* Make form labels white again */
+form label {
+  color: #ffffff !important;
+}
+/* Tighten label spacing */
+form label {
+  margin-bottom: 2px !important;   /* was 4–6px before */
+}
+
+/* Add breathing room inside the pop card */
+.card.style-pop {
+  padding: 26px !important;       /* was too tight */
+}
+
+/* Add spacing ABOVE the top paragraph */
+.card.style-pop p:first-of-type {
+  margin-top: 6px !important;
+  margin-bottom: 18px !important;
+}
+
+/* Add spacing BELOW the last helper text */
+.helper-text {
+  margin-bottom: 6px !important;
+}
+
+/* Add spacing between rows (slightly tighter overall) */
+.form-row {
+  gap: 6px !important;
+  margin-bottom: 8px !important;
+}
+
+/* Keep bottom of the section off the page edge */
+section.panel {
+  padding-bottom: 24px !important;
+}
 
 
   
@@ -498,6 +655,121 @@ html, body { margin:0; padding:0; overflow-x:hidden; max-width:100%; }
     // Initial render
     renderRoster();
     resetState();
-  </script>
+    </script>
+
+<!-- Join the Game – Character Submission -->
+<div class="wrap" style="margin-top:32px;">
+  <section class="panel">
+    <h3 style="margin:0 0 12px;">Join the Player Battle Royal</h3>
+
+    <div class="card style-pop">
+
+      <p>
+To enter the Player Battle Royal, you can reach out on Discord or fill out this form. We’ll get you added to the match, including creating a pic base if you need one.
+      </p>
+
+      <form action="https://api.web3forms.com/submit" method="POST">
+
+        <!-- Web3Forms required fields -->
+        <input type="hidden" name="access_key" value="d23f8534-c790-467c-b6f7-5ebe3899c4bd">
+        <input type="hidden" name="subject" value="New CFW Character Submission">
+        <input type="hidden" name="from_name" value="CFW Website Submission">
+        <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
+
+        <!-- ROW 1 -->
+        <div class="form-row two">
+          <div>
+            <label for="handle">Your Name / Handle</label>
+            <input type="text" id="handle" name="handle" placeholder="Discord / username / alias" required>
+          </div>
+          <div>
+            <label for="discord">Discord Username</label>
+            <input type="text" id="discord" name="discord" placeholder="example: user#1234" required>
+          </div>
+        </div>
+
+        <!-- ROW 2 -->
+        <div class="form-row two">
+          <div>
+            <label for="email">Email (optional)</label>
+            <input type="email" id="email" name="email" placeholder="you@example.com">
+          </div>
+          <div>
+            <label for="alignment">Alignment</label>
+            <select id="alignment" name="alignment" required>
+              <option value="">Select one...</option>
+              <option value="face">Face</option>
+              <option value="tweener">Tweener</option>
+              <option value="heel">Heel</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- ROW 3 -->
+        <div class="form-row two">
+          <div>
+            <label for="wrestler">Wrestler Name</label>
+            <input type="text" id="wrestler" name="wrestler" placeholder="Ring name" required>
+          </div>
+          <div>
+            <label for="nicknames">Nicknames / Monikers</label>
+            <input type="text" id="nicknames" name="nicknames" placeholder="The Foundry’s Favorite, etc">
+          </div>
+        </div>
+
+        <!-- ROW 4 -->
+        <div class="form-row two">
+          <div>
+            <label for="size">Height & Weight</label>
+            <input type="text" id="size" name="size" placeholder="Example: 6'1'' / 220 lbs">
+          </div>
+          <div>
+            <label for="billed">Billed From</label>
+            <input type="text" id="billed" name="billed" placeholder="City / weird location">
+          </div>
+        </div>
+
+        <!-- ROW 5 -->
+        <div class="form-row">
+          <label for="style">Wrestling Style</label>
+          <input type="text" id="style" name="style" placeholder="Brawler, high-flyer, technical, etc">
+        </div>
+
+        <!-- BIO -->
+        <div class="form-row">
+          <label for="bio">Character Bio</label>
+          <textarea id="bio" name="bio" placeholder="Description of who they are and what they want"></textarea>
+        </div>
+
+        <!-- LOOK -->
+      <div class="form-row" style="margin-top: 10px;">
+          <label for="look">Wrestler Look Description</label>
+          <textarea id="look" name="look" placeholder="Describe what your wrestler looks like"></textarea>
+        </div>
+
+        <!-- FINISHERS -->
+        <div class="form-row">
+          <div>
+            <label for="finishers">Signature / Finisher Moves</label>
+            <textarea id="finishers" name="finishers" placeholder="Signature / Finisher moves"></textarea>
+<br>
+<p></p>
+
+        <!-- SUBMIT -->
+        <div class="submit-row">
+          <button type="submit">Submit Character</button>
+        </div>
+<p></p>
+        <p class="helper-text">
+          By submitting, you’re giving permission for your character to appear in CFW shows, graphics, and storylines.
+          CFW is a chill, creative space — no hateful or discriminatory content is allowed.
+        </p>
+
+      </form>
+    </div>
+  </section>
+</div>
+<div class="wrap" style="margin-top:32px; margin-bottom:40px;">
+
 </body>
 </html>
