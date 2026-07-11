@@ -10,229 +10,37 @@
 
   gtag('config', 'G-XNRKS0V16H');
 </script>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>CFW Match Randomizer — Best of 5 (d20) + Advantage</title>
-<style>
-  :root{
-    --bg:#0b0b10; --card:#151521; --ink:#e7e7f7; --muted:#9aa0b5;
-    --accent:#A97DF0; --accent-2:#F0B37D; --ok:#4cd964;
-    --shadow: 0 10px 30px rgba(0,0,0,.35), 0 2px 10px rgba(0,0,0,.3);
-    --radius: 18px;
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Arial; color:var(--ink);
-    background: radial-gradient(1200px 600px at 50% -10%, #1e1e2a 0%, #0b0b10 55%);
-    min-height:100dvh; padding:24px;
-
-  }
-  .wrap{max-width:1100px; margin:0 auto; display:grid; gap:22px;}
-  header{display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-top: 30px;}
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 32px;   /* was 14px */
-}
-  .logo{width:46px; height:46px; background:conic-gradient(from 220deg, var(--accent), var(--accent-2));
-    border-radius:12px; box-shadow:var(--shadow); display:grid; place-items:center; font-weight:800; letter-spacing:.5px; color:#0b0b10}
-  .title h1{margin:0; font-size:22px}
-  .title p{margin:2px 0 0; color:var(--muted); font-size:13px}
-  .panel{
-    background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0));
-    border:1px solid rgba(255,255,255,.06); border-radius:var(--radius); padding:16px; box-shadow:var(--shadow)
-  }
-  .controls{display:flex; gap:14px; align-items:center; flex-wrap:wrap}
-  .seg{display:inline-grid; grid-auto-flow:column; gap:6px; background:#0e0e16; padding:6px; border-radius:999px; border:1px solid rgba(255,255,255,.06)}
-  .seg button{all:unset; cursor:pointer; padding:8px 14px; border-radius:999px; color:#9aa0b5; font-weight:600; font-size:14px}
-  .seg button.active{background:linear-gradient(180deg,#26263a,#1a1a2a); color:var(--ink); box-shadow:var(--shadow)}
-  .chk{display:flex; align-items:center; gap:8px; color:var(--muted); font-size:14px}
-  .chk input{width:18px; height:18px; accent-color:var(--accent)}
-
-  .roster{display:grid; grid-template-columns:repeat(auto-fill, minmax(166px,1fr)); gap:14px}
-  .card{
-    position:relative; padding:12px; background:#151521; border-radius:16px; border:1px solid rgba(255,255,255,.08);
-    transition:.15s transform; cursor:pointer; display:flex; gap:12px; align-items:center; flex-direction:column;
-  }
-  .card:hover{transform:translateY(-2px)}
   
-/* The square image frame */
-.avatar{
-  width: 100%;
-  aspect-ratio: 1 / 1;       /* perfect square */
-  border-radius: 16px;
-  overflow: hidden;
-  display: grid;
-  place-items: center;
-  transform: scale(1.05);
-}
-
-/* Force the photo to fill the frame */
-.avatar img{
-  width: 100%;
-  height: 100%;
-  object-fit: cover;          /* crop to fill */
-  display: block;             /* kill inline gaps */
-}
-
-  .nm{font-weight:700; font-size:14px; color:#fff; text-align:center; margin-top:4px}
-  .tag{font-size:11px; color:#c2c6d6}
-  .sel-dot{position:absolute; top:8px; right:8px; width:18px; height:18px; border-radius:50%;
-    background:transparent; border:2px solid rgba(255,255,255,.25)}
-  .card[aria-selected="true"] .sel-dot{background:var(--ok); border-color:transparent; box-shadow:0 0 0 2px rgba(76,217,100,.3)}
-
-  .picked{display:grid; grid-template-columns:1fr 1fr; gap:16px}
-  .slot{min-height:84px; border:1px dashed rgba(255,255,255,.18); border-radius:14px; padding:10px;
-    display:flex; gap:10px; align-items:center; background:rgba(255,255,255,.02); flex-wrap:wrap}
-  .slot h4{margin:0 0 6px; font-size:13px; color:#9aa0b5; font-weight:600}
-  .chip{display:inline-flex; align-items:center; gap:8px; padding:8px 10px; border-radius:12px;
-    background:#1d1d2b; border:1px solid rgba(255,255,255,.08); font-size:13px; margin-right:8px}
-  .sm{width:24px; height:24px; border-radius:6px; display:grid; place-items:center; color:#0b0b10; font-weight:800}
-
-  .advbar{display:flex; gap:8px; align-items:center; margin-left:auto}
-  .advbar label{font-size:12px; color:#9aa0b5}
-  .advbar select, .advbar input{
-    background:#101020; color:#e7e7f7; border:1px solid rgba(255,255,255,.12);
-    border-radius:10px; padding:6px 8px; font-size:12px; width:auto;
-  }
-  .advbar input{width:60px; text-align:center}
-
-  .actions{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
-  .btn{all:unset; cursor:pointer; padding:12px 16px; border-radius:12px; font-weight:800; letter-spacing:.3px;
-    background:linear-gradient(180deg, #6f57d9, #4832b3); box-shadow:var(--shadow)}
-  .btn[disabled]{opacity:.4; cursor:not-allowed}
-  .btn.ghost{background:#101020; border:1px solid rgba(255,255,255,.08); font-weight:700}
-
-  .result{display:flex; gap:14px; align-items:center; padding:12px 14px; border-radius:14px;
-    background:linear-gradient(180deg, rgba(76,217,100,.12), rgba(76,217,100,.05));
-    border:1px solid rgba(76,217,100,.25)}
-  .belt{font-size:18px}
-  .history{display:grid; gap:10px}
-  .tiny{font-size:12px; color:#9aa0b5}
-
-  .roundlog{display:grid; gap:6px; margin-top:10px}
-  .roundlog .r{background:#111325; border:1px solid rgba(255,255,255,.08);
-    padding:8px 10px; border-radius:10px; font-size:13px}
-  .badge{display:inline-block; padding:2px 8px; border-radius:999px; font-weight:800; font-size:11px; margin-left:8px}
-  .badge.win{background:#1e2f1e; color:#b5f7b5; border:1px solid #2f5f2f}
-
-  /* Home logo link (top-left) */
-  .logo-link { display:inline-block; }
-  .logo-img {
-    width: 85px; height: 85px; border-radius: 50%; object-fit: cover;
-    box-shadow: var(--shadow); transition: transform 0.2s ease;
-  }
-  .logo-img:hover { transform: scale(1.05); }
-
-  /* Profile mini link (blue text + purple hover + glow dot) */
-.mini-link{
-  font-size:11px;
-  color:#7ef3ff;
-  text-decoration:none;
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  transition:color .15s ease, text-shadow .15s ease;
-}
-.mini-link:hover{
-  color:#d5b6ff;
-  text-shadow:0 0 10px rgba(200,150,255,.9), 0 0 4px rgba(180,100,255,.6);
-}
-.mini-dot{
-  width:10px;
-  height:10px;
-  border-radius:50%;
-  background:#b26fff;
-  box-shadow:0 0 10px 2px rgba(180,100,255,.7);
-}
-
-
-  @media (max-width:720px){
-    .picked{grid-template-columns:1fr}
-    .advbar{width:100%; justify-content:flex-start; margin-left:0}
-  }
-  /* --- Layout containment fix --- */
-html, body {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;   /* prevents side scrolling */
-  max-width: 100%;
-}
-
-/* Ensure main wrapper never exceeds the screen width */
-.container, .wrapper, main {
-  max-width: 100vw;
-  overflow-x: hidden;
-  box-sizing: border-box;
-}
-html, body { margin:0; padding:0; overflow-x:hidden; max-width:100%; }
-.container, .wrapper, main { max-width:100vw; overflow-x:hidden; box-sizing:border-box; }
-.avatar{ width:100%; aspect-ratio:1/1; border-radius:16px; overflow:hidden; display:grid; place-items:center; }
-.avatar img{ width:100%; height:100%; object-fit:cover; display:block; }
-.titlebar {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-}
-
-.titlebar h1 {
-  margin: 0;
-  font-size: 2rem;
-}
-
-.subnav-inline a {
-  font-size: 0.95rem;
-  color: #ffffff;
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.subnav-inline a:hover {
-  color: #c084fc; /* purple hover */
-}
-.page-title {
-  margin: 0;              /* keep your title height tight */
-  line-height: 1.1;
-}
-
-.page-title .subnav-inline {
-  font-size: 0.95rem;     /* smaller than the title */
-  font-weight: 500;
-  margin-left: 14px;      /* space after "Match Randomizer" */
-  white-space: nowrap;    /* keep it on one line */
-}
-
-.page-title .subnav-inline a {
-  color: #ffffff;         /* white links */
-  text-decoration: none;
-  transition: color .25s ease;
-}
-
-.page-title .subnav-inline a:hover {
-  color: #c084fc;         /* purple hover */
-}
-
-  footer{color:var(--muted);text-align:center;padding:20px 0;border-top:1px solid #1f1f2c}
-  .page-title {
-  margin: 0;
-  line-height: 1.1;
-}
-
-  
-</style>
-  <!-- Basic Meta -->
+  <!-- Metadata First -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0d0d0f">
 
-  <!-- SEO -->
-  <title>CFW Roster & Match Randomizer</title>
-  <meta name="description" content="Pick wrestlers from the Creative Force Wrestling roster and let the dice decide who wins. Story-first wrestling roleplay meets chance.">
-  <meta property="og:title" content="CFW Roster & Match Randomizer">
-  <meta property="og:description" content="Pick wrestlers and let the d20 decide the outcome. Story-first wrestling roleplay meets dice-based chaos.">
+  <!-- Title -->
+  <title>Creative Force Wrestling — AI-Powered Wrestling E-Fed RPG with Dice-Based Storytelling</title>
+
+  <!-- SEO Meta Tags -->
+ <meta name="description" content="Creative Force Wrestling (CFW) is an AI-powered wrestling e-fed and roleplaying game where dice decide every match. Build characters, shape storylines, and join a unique wrestling RPG experience blending AI creativity with tabletop-style gameplay.">
+<meta name="keywords" content="
+wrestling efed, e-fed roleplay, wrestling roleplaying game, AI RPG, AI roleplaying, AI wrestling game,
+dice wrestling, dice-based RPG, tabletop wrestling RPG, fantasy wrestling league,
+CFW, Creative Force Wrestling, wrestling RPG, AI storytelling, AI e-fed, booking simulator,
+ai-assisted roleplay, indie wrestling efed, story-driven rpg">
+
+  <meta name="author" content="Creative Force Wrestling">
+
+  <!-- Open Graph / Social Sharing -->
+  <meta property="og:title" content="Creative Force Wrestling — Story-First RPG">
+  <meta property="og:description" content="An underground, story-first wrestling RPG where dice decide the outcomes and fantasy booking becomes reality.">
   <meta property="og:image" content="https://creativeforcewrestling.com/images/cfwlogo.jpg">
-  <meta property="og:url" content="https://roster.creativeforcewrestling.com/">
+  <meta property="og:url" content="https://creativeforcewrestling.com/">
   <meta property="og:type" content="website">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Creative Force Wrestling — Story-First RPG">
+  <meta name="twitter:description" content="An underground, story-first wrestling RPG where dice decide the outcomes and fantasy booking becomes reality.">
+  <meta name="twitter:image" content="https://creativeforcewrestling.com/images/cfwlogo.jpg">
 
   <!-- Favicons -->
   <link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
@@ -243,397 +51,335 @@ html, body { margin:0; padding:0; overflow-x:hidden; max-width:100%; }
   <link rel="icon" type="image/png" sizes="256x256" href="favicon.png">
   <link rel="icon" type="image/png" sizes="512x512" href="favicon.png">
   <link rel="shortcut icon" href="favicon.png">
+  <style>
+    :root{
+      --bg:#0b0b0f;
+      --panel:#14141c;
+      --ink:#e9e9ef;
+      --muted:#a5a6b2;
+      --accent:#7df9ff;     /* neon ice */
+      --accent2:#b26fff;    /* neon violet */
+      --brand:#ff3366;      /* punchy magenta */
+      --ring:#1d1d28;
+      --radius:18px;
+      --shadow:0 10px 30px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:radial-gradient(1200px 600px at 10% -10%, #191a23 0%, #0b0b0f 55%, #09090c 100%);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif}
+    a{color:var(--accent);text-decoration:none}
+    a:hover{color:var(--accent2)}
+    .wrap{max-width:1120px;margin:auto;padding:20px}
+    header.hero{
+      position:relative;border:1px solid #242437;background:
+        linear-gradient(180deg, rgba(125,249,255,.08), rgba(178,111,255,.06)),
+        radial-gradient(900px 500px at 80% -20%, rgba(255,51,102,.12), transparent 60%),
+        var(--panel);
+      border-radius:var(--radius);
+      padding:28px 22px 22px;box-shadow:var(--shadow);overflow:hidden
+    }
+    .badge{display:inline-flex;gap:8px;align-items:center;font-size:12px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;border:1px solid #2a2a3d;border-radius:999px;padding:6px 10px;background:#12121a}
+    .hero h1{margin:.6rem 0 0;font-size:clamp(24px,3vw,34px);line-height:1.05}
+    .hero p.sub{color:var(--muted);max-width:60ch;margin:.6rem 0 1.2rem}
+    .cta-row{display:flex;flex-wrap:wrap;gap:12px}
+    .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 16px;border-radius:12px;border:1px solid #2a2a3d;background:#12121a;color:var(--ink);font-weight:600}
+    .btn.primary{background:linear-gradient(90deg,var(--brand),var(--accent2));border-color:transparent}
+    .btn span.small{opacity:.8;font-weight:500;font-size:12px}
+    .grid{display:grid;gap:16px;margin-top:18px}
+    @media (min-width:900px){.grid.cols-3{grid-template-columns:2fr 1fr 1fr}.grid.cols-2{grid-template-columns:1.3fr 1fr}}
+    .card{background:var(--panel);border:1px solid #242437;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+    .card .thumb{position:relative;aspect-ratio:4/3;background:var(--ring)}
+    /* responsive images without awkward crop on mobile */
+    .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+    .card .body{padding:14px 14px 16px}
+    .eyebrow{font-size:12px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase}
+    h3{margin:.3rem 0 .3rem;font-size:18px}
+    p{color:#cacad6}
+    .list{display:grid;gap:10px;padding:0;margin:0;list-style:none}
+    .list li{display:flex;gap:10px;padding:10px;border:1px solid #242437;border-radius:12px;background:#101019;align-items:center}
+    .dot{width:8px;height:8px;border-radius:50%;background:var(--accent2);box-shadow:0 0 10px var(--accent2)}
+    .footer{margin-top:26px;padding:20px;color:var(--muted);text-align:center;border-top:1px solid #1f1f2c}
+    /* header band */
+    .band{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.pill {
+  padding: 6px 12px;
+  border: 1px solid rgba(60, 120, 150, 0.2);
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(20, 30, 45, 0.9), rgba(10, 20, 35, 0.9));
+  color: #a0b8d8; /* muted ice-blue */
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.15px;
+  box-shadow: 0 0 6px rgba(60, 120, 180, 0.08);
+  transition: all 0.25s ease;
+}
+
+.pill:hover {
+  background: linear-gradient(135deg, rgba(30, 50, 75, 0.95), rgba(15, 25, 45, 0.95));
+  box-shadow: 0 0 10px rgba(80, 140, 200, 0.15);
+  transform: translateY(-1px);
+}
+
+    /* marquee line */
+    .marquee{margin:18px 0 6px;border-left:3px solid var(--brand);padding-left:10px;color:#f4d7e0;font-weight:600}
+    /* Make the Kingdom Come / News section square */
+    
+.grid.cols-2 .thumb {
+  aspect-ratio: 1/1; /* 1 wide, 1 tall */
+  background: var(--ring);
+}
+
+.grid.cols-2 .thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* fills the square cleanly */
+  display: block;
+}
+.discord-widget {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+}
+/* === Replace Foundry text badge with CFW logo === */
+.logo-badge {
+  padding: 6px 14px;
+
+  align-items: center;
+  justify-content: center;
+
+}
+
+.logo-badge img {
+  height: 90px; /* adjust until it feels right */
+  width: auto;
+
+
+}
+
+/* Force smaller header title */
+.hero h1 {
+  font-size: clamp(22px, 3vw, 32px) !important;
+  line-height: 1.05;
+}
+/* --- Replace Join Discord button with custom E-Fed Hub design --- */
+.btn.hub {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #ffb36a 0%, #e77c1f 50%, #c86000 100%);
+  border: 1px solid #8a4612;
+  color: #1b1208;
+  font-weight: 700;
+  padding: 7px 15px;
+  border-radius: 12px;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.15),
+    0 8px 24px rgba(200, 96, 0, 0.25);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+}
+
+.btn.hub:hover {
+  transform: translateY(-1px);
+  filter: saturate(1.05);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.2),
+    0 12px 28px rgba(200, 96, 0, 0.35);
+}
+
+.btn.hub img {
+  width: 50px;
+  height: 50px;
+  border-radius: 6px;
+  display: block;
+}
+
+.btn.hub span {
+  line-height: 1;
+  white-space: nowrap;
+}
+.grid.cols-2 .card:first-child { max-width:600px; margin:0 auto; }
+
+.btn.howto {
+  background: rgba(79, 109, 252, 0.18); /* soft washed-out blue */
+  color: #e8ecff !important;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn.howto:hover {
+  background: rgba(79, 109, 252, 0.28); /* slightly stronger when hovered */
+  transform: translateY(-1px);
+}
+
+.sub-link {
+  display: inline-block;
+  margin-left: 14px;           /* keeps it beside the button */
+  color: var(--accent);        /* same neon blue as your links */
+  font-size: 14px;
+  opacity: 0.85;               /* softer so it doesn’t compete */
+}
+
+.sub-link:hover {
+  opacity: 1;
+  color: var(--accent2);       /* violet hover, consistent with other links */
+}
+
+.logo-badge {
+  background: transparent !important;
+  border: none !important;
+  padding: 0;
+}
+
+
+
+
+
+
+
+
+  </style>
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "VideoGame",
-  "name": "CFW Roster & Match Randomizer",
-  "url": "https://roster.creativeforcewrestling.com/",
-  "description": "The official roster and dice-based match randomizer for Creative Force Wrestling — an AI-powered e-fed wrestling RPG.",
-  "genre": [
-    "Wrestling",
-    "RPG",
-    "AI Roleplaying Game",
-    "Dice Game",
-    "E-Fed"
-  ],
-  "creator": {
-    "@type": "Organization",
-    "name": "Creative Force Wrestling"
-  }
+  "@type": "Game",
+  "name": "Creative Force Wrestling",
+  "genre": "AI Roleplaying Game, Wrestling E-Fed, Dice RPG",
+  "description": "An AI-powered wrestling roleplaying game and e-fed where dice decide match outcomes and players help shape the story.",
+  "url": "https://creativeforcewrestling.com/",
+  "creator": "Creative Force Wrestling"
 }
 </script>
-</head>
 
 </head>
-
 <body>
-  
   <div class="wrap">
-    <header>
-      <div class="brand">
-        <a href="https://creativeforcewrestling.com" class="logo-link">
-          <img src="images/test2.png" alt="Creative Force Wrestling" class="logo-img">
-        </a>
-        <div class="title">
-          <h1 class="page-title">
-  Match Randomizer
-  <span class="subnav-inline">
-    <a href="https://creativeforcewrestling.com/">Home</a> |
-    <a href="https://shows.creativeforcewrestling.com/">Show Archive</a> |
-            <a href="https://creativeforcewrestling.com/play.html">How to Play</a> 
-  </span>
-</h1>           
- 
-          <p>Best of 5 • d20 rolls • Advantage/Disadvantage + Bonus</p>
 
-        </div>
+    <!-- HERO -->
+    <header class="hero">
+        <!-- E-Fed Hub Discord Widget -->
+<div class="discord-widget">
+  <iframe
+    src="https://discord.com/widget?id=1426563831882190968&theme=dark"
+    width="350"
+    height="200"
+    allowtransparency="true"
+    frameborder="0"
+    sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+  ></iframe>
+</div>
+
+      <div class="badge logo-badge">
+  <img src="images/test2.png" alt="CFW Logo">
+</div>
+
+      <h1>Creative Force Wrestling</h1>
+      <p class="sub">An underground, story-first wrestling RPG E-Fed where dice decide the outcomes and fantasy booking becomes reality.</p>
+      <div class="cta-row">
+        <a class="btn hub" href="https://discord.gg/7fq5HNt" target="_blank" rel="noopener" aria-label="Join the E-Fed Hub on Discord">
+  <img src="images/hub2.png" alt="E-Fed Hub logo" aria-hidden="true">
+  <span>Join the E-Fed Hub</span>
+</a>
+        <a class="btn" href="https://roster.creativeforcewrestling.com/">👥 Roster / Match Randomizer</a>
+        <a class="btn" href="https://shows.creativeforcewrestling.com/">🗂️ Show Archive</a>
+        <a class="btn" href="https://shows.creativeforcewrestling.com/#records">📊 Records</a>
+        <a class="btn howto" href="https://creativeforcewrestling.com/play.html">🎲 How to Play</a>        
       </div>
-      <div class="controls panel">
-        <div class="seg" role="tablist" aria-label="Match type">
-          <button class="active" data-mode="singles" role="tab" aria-selected="true">Singles</button>
-          <button data-mode="tag" role="tab" aria-selected="false">Tag (2v2)</button>
-        </div>
-        <label class="chk"><input id="titleToggle" type="checkbox" /> Title Match</label>
-        <button class="btn ghost" id="clear">Clear Picks</button>
+      <div class="band">
+        <span class="pill">⚙️ Create A Character</span>
+        <span class="pill">✍️ Roleplay Your Story</span>
+        <span class="pill">🎲 Let Dice Decide Your Fate</span>
+        <span class="pill">🧠 Pitch storylines</span>
+        <span class="pill">🌍 Shape The World With Booking</span>
       </div>
     </header>
 
-    <section class="panel">
-<h3 style="margin:0 0 12px;">
-  Roster
-</h3>
-
-
-      <div id="roster" class="roster"></div>
-    </section>
-
-    <section class="panel">
-      <div class="picked">
-        <div>
-          <h3 style="margin:0 0 10px">Corner A</h3>
-          <div id="cornerA" class="slot" aria-live="polite"><h4>Pick for this side</h4></div>
-          <div class="advbar">
-            <label for="advA">Adv:</label>
-            <select id="advA">
-              <option value="none">None</option>
-              <option value="adv">Advantage</option>
-              <option value="dis">Disadvantage</option>
-            </select>
-            <label for="bonusA">Bonus:</label>
-            <input id="bonusA" type="number" step="1" value="0" min="-5" max="10" />
-          </div>
+    <!-- TOP ROW -->
+    <section class="grid cols-3">
+      <!-- Latest Feature -->
+      <article class="card">
+        <div class="thumb">
+          <img src="images/after.png" alt="Run It Back event poster"/>
         </div>
-        <div>
-          <h3 style="margin:0 0 10px">Corner B</h3>
-          <div id="cornerB" class="slot" aria-live="polite"><h4>Pick for this side</h4></div>
-          <div class="advbar">
-            <label for="advB">Adv:</label>
-            <select id="advB">
-              <option value="none">None</option>
-              <option value="adv">Advantage</option>
-              <option value="dis">Disadvantage</option>
-            </select>
-            <label for="bonusB">Bonus:</label>
-            <input id="bonusB" type="number" step="1" value="0" min="-5" max="10" />
-          </div>
+        <div class="body">
+          <div class="eyebrow">AFTERBURN</div>
+          <h3>The Standard Is Tested</h3>
+          <p>Months of attacks, mind games, and disrespect have led to this. On July 30, Adam Stryker challenges Ace Dalton for the CFW World Championship after fighting through every obstacle the Seers have placed in his path. Also featuring Savior Hawkins defending the Black Light Championship against Ciaran Kennedy, Jace Valor and Lucas Knox will settle their score in a Falls Count Anywhere Match, and more at one of CFW's biggest event yet.</p>
+          <a class="btn" href="https://discord.gg/jbjGpJGQDY">Join The CFW Discord →</a>
+          <a class="sub-link" href="https://roster.creativeforcewrestling.com/">CFW Roster →</a>
+
         </div>
-      </div>
-      <div class="actions" style="margin-top:14px">
-        <button id="book" class="btn">Book the Match</button>
-        <span class="tiny">Singles needs 2 picks total. Tag needs 4 (2 per side).</span>
-      </div>
+      </article>
+
+      <!-- Quick Links -->
+      <aside class="card">
+        <div class="body">
+            <div class="eyebrow">Jump Into The Latest</div>
+            <br>
+            <ul class="list">
+            <li><span class="dot"></span> <a href="https://shows.creativeforcewrestling.com/speedrun9.pdf">SpeedRun: Episode 9</a></li>
+            <li><span class="dot"></span> <a href="https://shows.creativeforcewrestling.com/blacklight39.pdf">Black Light: Episode 39</a></li>
+            <li><span class="dot"></span> <a href="https://shows.creativeforcewrestling.com/speedrun8.pdf">SpeedRun: Episode 8</a></li>
+            <li><span class="dot"></span> <a href="https://shows.creativeforcewrestling.com/blacklight38.pdf">Black Light: Episode 38</a></li>
+            <li><span class="dot"></span> <a href="https://shows.creativeforcewrestling.com/blacklight37.pdf">Black Light: Episode 37</a></li>
+            <li><span class="dot"></span> <a href="https://shows.creativeforcewrestling.com/speedrun7.pdf">SpeedRun: Episode 7</a></li>
+            <li><span class="dot"></span> <a href="https://shows.creativeforcewrestling.com/speedrun6.pdf">SpeedRun: Episode 6</a></li>
+            <li><span class="dot"></span> <a href="https://shows.creativeforcewrestling.com/blacklight36.pdf">Black Light: Episode 36</a></li>
+            <li><span class="dot"></span> <a href="https://shows.creativeforcewrestling.com/blacklight35.pdf">Black Light: Episode 35</a></li>
+            <li><span class="dot"></span> <a href="https://shows.creativeforcewrestling.com/blacklight34.pdf">Black Light: Episode 34</a></li>
+         <a class="btn" href="https://shows.creativeforcewrestling.com/"><span>Show Archive →</span></a>
+          </ul>
+                    
+        </div>
+      </aside>
+
+      <!-- New to CFW -->
+      <aside class="card">
+        <div class="body">
+          <div class="eyebrow">New Here?</div>
+          <h3>What is CFW?</h3>
+          <p>CFW started as a solo eFed <strong>role-playing game</strong> built with the help of ChatGPT. I handle the booking, storylines, and creative direction, while a <strong>dice system decides the winners</strong> — forcing me to book around the results. Every show is written in an old-school Word-doc style, complete with AI-generated visuals to bring the world at The Foundry to life. It’s a blend of storytelling, luck, and imagination — part RPG, part <strong>wrestling show.</strong></p>
+          <p>CFW is open to contributors, <strong>role-players</strong>, and creative minds who want to help the world grow — whether through story ideas, artwork, or new character concepts. It’s meant to evolve with <strong>community input and imagination.</strong></p>
+          <a class="btn" href="https://creativeforcewrestling.com/play.html"><span>Learn How to Play →</span></a>
+        </div>
+      </aside>
     </section>
 
-    <section id="out" class="panel" aria-live="polite" style="display:none"></section>
-
-    <section class="panel">
-      <h3 style="margin:0 0 10px">History</h3>
-      <div id="history" class="history tiny"></div>
+    <!-- News strip -->
+    <div class="marquee">News</div>
+    <section class="grid cols-2">
+      <article class="card">
+      <div class="thumb"><img src="images/ace2.png" alt="Kingdom Come poster teaser"></div>
+      <div class="body">
+        <div class="eyebrow">SpeedRun 9</div>
+        <h3>Road to AFTERBURN</h3>
+        <p>Reign Rokk returns looking to rebuild his momentum against Black Light Championship number one contender Ciaran Kennedy. Lucas Knox descends further into desperation with a vicious backstage assault on Wyatt Storm, threatening to derail Storm's long-awaited CFW World Championship opportunity against Ace Dalton.</p>
+        <a class="btn" href="https://shows.creativeforcewrestling.com/speedrun9.pdf">Read Results →</a>
+                  
+      </div>
+      </article>
+      <article class="card">
+      <div class="thumb"><img src="images/un.png" alt="SpeedRun ring photo"></div>
+      <div class="body">
+        <div class="eyebrow">Affiliates</div>
+        <h3>CFW Spotlight Fed</h3>
+        <p> UNIQUE Pro Wrestling is kicking off its Mystery Tour, a series built entirely around unpredictability. It starts with the crowning of inaugural champions, then moves into events where opponents, partners, and even match stipulations aren’t always known ahead of time. Each show brings a different twist, leading to a final Supershow where everything comes together. It’s a different approach to storytelling, driven by a creative vision. If you’re interested in something outside the usual format, it’s worth checking out.</p>
+        <a class="btn" href=" https://uniquepro.proboards.com/">Check Out UNIQUE →</a>
+      </div>
+      </article>
     </section>
+
+    <footer class="footer">
+      © <span id="y"></span> Creative Force Wrestling · Built with grit & dice.
+      <div style="margin-top:6px">
+        Contact: <a href="https://discord.gg/jbjGpJGQDY">Reach Out On Discord</a>
+      </div>
+    </footer>
   </div>
 
-<script>
-/* ---------- ROSTER DATA ---------- */
-/* Add profile:"https://shows.creativeforcewrestling.com/profiles/name.pdf"
-   to any entry below to make their card show the blue ● Profile link. */
-const ROSTER = [
-  { name:"Ace Dalton",      color:"#fda4af", short:"AD", img:"images/ace.jpg", profile:"https://roster.creativeforcewrestling.com/ace_dalton.pdf" },
-  { name:"Adam Stryker",    color:"#f97316", short:"AS", img:"images/adam.jpg", profile:"https://roster.creativeforcewrestling.com/adam_stryker.pdf" },
-  { name:"Águila Feral",    color:"#60a5fa", short:"AF", img:"images/feral.jpg", profile:"https://roster.creativeforcewrestling.com/aguila_feral.pdf" },
-  { name:"Alaric Green",    color:"#22d3ee", short:"AG", img:"images/green.jpg", profile:"https://roster.creativeforcewrestling.com/alaric_green.pdf" },
-  { name:"Brandi Blight",   color:"#f59e0b", short:"BB", img:"images/brandi.jpg", profile:"https://roster.creativeforcewrestling.com/brandi_blight.pdf"  },
-  { name:"Caleb Cross",     color:"#c084fc", short:"CC", img:"images/caleb.jpg", profile:"https://roster.creativeforcewrestling.com/caleb_cross.pdf" },
-  { name:"Chris Titan",     color:"#c084fc", short:"CS", img:"images/titan.jpg", profile:"https://roster.creativeforcewrestling.com/chris_titan.pdf" },
-  { name:"Ciaran Kennedy",  color:"#c084fc", short:"CK", img:"images/ciaran.jpg", profile:"https://roster.creativeforcewrestling.com/ciaran_kennedy.pdf" },
-  { name:"Dominic Hex",     color:"#f472b6", short:"DH", img:"images/hex.jpg", profile:"https://roster.creativeforcewrestling.com/dominic_hex.pdf" },
-  { name:"Gale",            color:"#f472b6", short:"GA", img:"images/gale.jpg", profile:"https://roster.creativeforcewrestling.com/gale.pdf" },
-  { name:"Graysie Parker",  color:"#f472b6", short:"GP", img:"images/graysie.jpg", profile:"https://roster.creativeforcewrestling.com/graysie_parker.pdf" },
-  { name:"Jade Vierra",     color:"#60a5fa", short:"JD", img:"images/jade.jpg", profile:"https://roster.creativeforcewrestling.com/jade_vierra.pdf" },
-  { name:"Jace Valor",      color:"#7dd3fc", short:"JV", img:"images/jace.jpg", profile:"https://roster.creativeforcewrestling.com/jace_valor.pdf"},
-  { name:"Josh Conway",     color:"#c084fc", short:"JC", img:"images/josh.jpg", profile:"https://roster.creativeforcewrestling.com/josh_conway.pdf"  },
-  { name:"Killjoy",         color:"#c084fc", short:"KJ", img:"images/killjoy.jpg", profile:"https://roster.creativeforcewrestling.com/killjoy.pdf" },
-  { name:"Lena Wilde",      color:"#a78bfa", short:"LW", img:"images/lena.jpg", profile:"https://roster.creativeforcewrestling.com/lena_wilde.pdf"  },
-  { name:"Lola Rose",       color:"#c084fc", short:"LR", img:"images/rose.jpg", profile:"https://roster.creativeforcewrestling.com/lola_rose.pdf" },
-  { name:"Lobo Briggs",     color:"#34d399", short:"LB", img:"images/lobo2.jpg", profile:"https://roster.creativeforcewrestling.com/lobo_briggs.pdf" },
-  { name:"Lucas Knox",      color:"#f87171", short:"LK", img:"images/lucas.jpg", profile:"https://roster.creativeforcewrestling.com/lucas_knox.pdf" },
-  { name:"MAR",             color:"#c084fc", short:"MA", img:"images/mar.jpg", profile:"https://roster.creativeforcewrestling.com/mar.pdf" },
-  { name:"Montag Black",    color:"#000000", short:"MB", img:"images/montag.jpg", profile:"https://roster.creativeforcewrestling.com/montag_black.pdf" },
-  { name:"Mara Grave",      color:"#ff6b6b", short:"MG", img:"images/mara.jpg", profile:"https://roster.creativeforcewrestling.com/mara_grave.pdf" },
-  { name:"Marisol Vela",    color:"#c084fc", short:"MV", img:"images/vela.jpg", profile:"https://roster.creativeforcewrestling.com/marisol_vela.pdf" },
-  { name:"Nick Morrell",    color:"#8bd5ff", short:"NM", img:"images/nick.jpg", profile:"https://roster.creativeforcewrestling.com/nick_morrell.pdf" },
-  { name:"Reign Rokk",      color:"#f87171", short:"RR", img:"images/rokk.jpg", profile:"https://roster.creativeforcewrestling.com/reign_rokk.pdf" },
-  { name:"Rokkit",          color:"#22d3ee", short:"RO", img:"images/rokkit.jpg", profile:"https://roster.creativeforcewrestling.com/rokkit.pdf" },
-  { name:"Savior Hawkins",  color:"#c084fc", short:"SH", img:"images/savior.jpg", profile:"https://roster.creativeforcewrestling.com/savior_hawkins.pdf" },
-  { name:"Selina Santorino",color:"#fb7185", short:"SS", img:"images/selina.jpg", profile:"https://roster.creativeforcewrestling.com/selina_santorino.pdf" },
-  { name:"Shayna Vex",      color:"#34d399", short:"SV", img:"images/shayna.jpg", profile:"https://roster.creativeforcewrestling.com/shayna_vex.pdf" },
-  { name:"Sudio",           color:"#fb7185", short:"SU", img:"images/sudio.jpg", profile:"https://roster.creativeforcewrestling.com/sudio.pdf" },
-  { name:"Swanny",          color:"#22d3ee", short:"SW", img:"images/swanny.jpg", profile:"https://roster.creativeforcewrestling.com/swanny.pdf" },
-  { name:"Venessa Vale",    color:"#c084fc", short:"VV", img:"images/vale.jpg", profile:"https://roster.creativeforcewrestling.com/venessa_vale.pdf" },
-  { name:"Wendell Grimes",  color:"#34d399", short:"WG", img:"images/grimes.jpg", profile:"https://roster.creativeforcewrestling.com/wendell_grimes.pdf" },
-  { name:"Wyatt Storm",     color:"#c084fc", short:"WS", img:"images/storm.jpg", profile:"https://roster.creativeforcewrestling.com/wyatt_storm.pdf" },
-  { name:"Zenix Metax",     color:"#c084fc", short:"ZM", img:"images/zenix.jpg", profile:"https://roster.creativeforcewrestling.com/zenix_metax.pdf" },
-];
-
-let MODE = "singles";
-const state = { A:[], B:[] };
-
-const $ = sel => document.querySelector(sel);
-const rosterEl = $("#roster");
-const cornerA = $("#cornerA");
-const cornerB = $("#cornerB");
-const out = $("#out");
-const historyEl = $("#history");
-const titleToggle = $("#titleToggle");
-
-// Advantage controls
-const advA = $("#advA"), advB = $("#advB");
-const bonusA = $("#bonusA"), bonusB = $("#bonusB");
-
-/* ---------- UI RENDER ---------- */
-function renderRoster(){
-  rosterEl.innerHTML = "";
-  ROSTER.forEach((r, idx) => {
-    const card = document.createElement("button");
-    card.className = "card"; card.type = "button";
-    card.setAttribute("data-id", idx);
-    card.setAttribute("aria-selected", "false");
-
-    // build sublabel: Profile link if present, otherwise CFW Roster
-    const sub = r.profile
-      ? `<div class="tag">
-           <a class="mini-link" href="${r.profile}" target="_blank" rel="noopener">
-             <span class="mini-dot" aria-hidden="true"></span>Profile
-           </a>
-         </div>`
-      : `<div class="tag">CFW Roster</div>`;
-
-    card.innerHTML = `
-      <div class="avatar" style="background:${r.img ? 'transparent' : r.color}">
-        ${r.img ? `<img src="${r.img}" alt="${r.name}" />` : r.short}
-      </div>
-      <div>
-        <div class="nm">${r.name}</div>
-        ${sub}
-      </div>
-      <div class="sel-dot" aria-hidden="true"></div>
-    `;
-
-    // prevent the profile link from toggling selection
-    card.addEventListener("click", () => togglePick(idx, card));
-    const link = card.querySelector(".mini-link");
-    if (link) link.addEventListener("click", (e)=> e.stopPropagation());
-
-    rosterEl.appendChild(card);
-  });
-}
-renderRoster();
-
-function maxPerSide(){ return MODE === "singles" ? 1 : 2; }
-function neededTotal(){ return MODE === "singles" ? 2 : 4; }
-
-function togglePick(idx, cardEl){
-  if (state.A.includes(idx) || state.B.includes(idx)){
-    state.A = state.A.filter(i => i!==idx);
-    state.B = state.B.filter(i => i!==idx);
-    cardEl.setAttribute("aria-selected","false");
-  } else {
-    if (state.A.length < maxPerSide()){ state.A.push(idx); cardEl.setAttribute("aria-selected","true"); }
-    else if (state.B.length < maxPerSide()){ state.B.push(idx); cardEl.setAttribute("aria-selected","true"); }
-    else { cardEl.animate([{transform:"translateY(0)"},{transform:"translateY(-3px)"},{transform:"translateY(0)"}],{duration:200}); }
-  }
-  renderSlots(); validateButton();
-}
-
-function renderSlots(){
-  const mkChip = (r) => `<span class="chip"><span class="sm" style="background:${r.color}">${r.short}</span>${r.name}</span>`;
-  cornerA.innerHTML = `<h4>${MODE==="singles"?"Competitor":"Team A"}</h4>` + state.A.map(i=>mkChip(ROSTER[i])).join("");
-  cornerB.innerHTML = `<h4>${MODE==="singles"?"Competitor":"Team B"}</h4>` + state.B.map(i=>mkChip(ROSTER[i])).join("");
-}
-function validateButton(){
-  const total = state.A.length + state.B.length;
-  $("#book").disabled = total !== neededTotal();
-}
-validateButton();
-
-/* ---------- DICE HELPERS ---------- */
-function rollD20(){ return Math.floor(Math.random()*20)+1; } // 1..20
-function rollWithAdv(kind){
-  const r1 = rollD20(), r2 = rollD20();
-  if (kind === "adv") return Math.max(r1, r2);
-  if (kind === "dis") return Math.min(r1, r2);
-  return r1;
-}
-function parseBonus(el){ return Number(el.value)||0; }
-
-function roundResultSingles(opts){
-  const { nameA, nameB, advA, advB, bonusA, bonusB } = opts;
-  let baseA = rollWithAdv(advA), baseB = rollWithAdv(advB);
-  let a = baseA + bonusA, b = baseB + bonusB;
-
-  let note = `${advA!=="none" ? `A ${advA} ` : ""}${advB!=="none" ? `B ${advB} ` : ""}`.trim();
-  if (bonusA) note += `${note?" • ":""}A bonus ${bonusA>=0?"+":""}${bonusA}`;
-  if (bonusB) note += `${note?" • ":""}B bonus ${bonusB>=0?"+":""}${bonusB}`;
-  if (note==="") note = "";
-
-  if (a === b){
-    const ra = rollD20(), rb = rollD20();
-    note += `${note?" • ":""}tie ${a}-${b}, reroll ${ra}-${rb}`;
-    a = ra; b = rb;
-  }
-  if (baseA===20 || baseB===20) note += `${note?" • ":""}Nat 20!`;
-  if (baseA===1  || baseB===1 ) note += `${note?" • ":""}(1 rolled)`;
-
-  return { a, b, note, winner: (a>b) ? "A" : "B" };
-}
-
-function roundResultTag(opts){
-  const { advA, advB, bonusA, bonusB } = opts;
-  const a1 = rollWithAdv(advA), a2 = rollWithAdv(advA);
-  const b1 = rollWithAdv(advB), b2 = rollWithAdv(advB);
-  let a = a1 + a2 + bonusA, b = b1 + b2 + bonusB;
-  let note = `A(${a1}+${a2}${bonusA?`+${bonusA}`:""}) vs B(${b1}+${b2}${bonusB?`+${bonusB}`:""})`;
-  if (advA!=="none") note += ` • A ${advA}`;
-  if (advB!=="none") note += ` • B ${advB}`;
-  if ([a1,a2,b1,b2].includes(20)) note += ` • Nat 20!`;
-  if (a === b){
-    const ra = rollD20(), rb = rollD20();
-    note += ` • tie, sudden death ${ra}-${rb}`;
-    a = ra; b = rb;
-  }
-  return { a, b, note, winner: (a>b) ? "A" : "B" };
-}
-
-function bestOfFive(runRound){
-  const rounds = []; let scoreA = 0, scoreB = 0, r = 0;
-  while (scoreA < 3 && scoreB < 3){
-    r++;
-    const rr = runRound();
-    if (rr.winner === "A") scoreA++; else scoreB++;
-    rounds.push({ r, ...rr, scoreA, scoreB });
-  }
-  return { rounds, scoreA, scoreB, winnerSide: (scoreA>scoreB)?"A":"B" };
-}
-
-/* ---------- BOOK MATCH (Best of 5 + Adv) ---------- */
-function bookMatch(){
-  const isTitle = titleToggle.checked;
-  const mode = MODE;
-  out.style.display = "block";
-
-  const advKindA = advA.value, advKindB = advB.value;
-  const bA = parseBonus(bonusA), bB = parseBonus(bonusB);
-
-  if (mode === "singles"){
-    const A = ROSTER[state.A[0]];
-    const B = ROSTER[state.B[0]];
-    const series = bestOfFive(() =>
-      roundResultSingles({ nameA:A.name, nameB:B.name, advA:advKindA, advB:advKindB, bonusA:bA, bonusB:bB })
-    );
-    const winner = (series.winnerSide === "A") ? A : B;
-    const matchupText = `${A.name} vs ${B.name}`;
-    const winnerText  = `${winner.name} wins the series ${series.scoreA}-${series.scoreB}${isTitle ? " to retain/capture the CFW World Championship" : ""}.`;
-
-    out.innerHTML = `
-      <div class="result">
-        <div class="belt" aria-hidden="true">${isTitle ? "🏆" : "🎲"}</div>
-        <div>
-          <div style="font-weight:800; font-size:16px; margin-bottom:4px">${matchupText}</div>
-          <div style="color:#c7f9cc">${winnerText}</div>
-          <div class="tiny" style="margin-top:6px; color:var(--muted)">
-            Format: Best of 5 • d20 • A: ${advKindA}${bA?` ${bA>=0?"+":""}${bA}`:""} • B: ${advKindB}${bB?` ${bB>=0?"+":""}${bB}`:""}
-          </div>
-          <div class="roundlog">
-            ${series.rounds.map(({r,a,b,note,scoreA,scoreB,winner}) => `
-              <div class="r">
-                <strong>Round ${r}:</strong> ${A.name} <strong>${a}</strong> — ${B.name} <strong>${b}</strong>
-                ${note ? `<span class="tiny" style="margin-left:6px; color:#b5b9cd">${note}</span>` : ""}
-                <span class="badge win">${winner==="A"?A.name:B.name} takes it (${scoreA}-${scoreB})</span>
-              </div>`).join("")}
-          </div>
-        </div>
-      </div>
-    `;
-    const stamp = new Date().toLocaleString();
-    const line = document.createElement("div");
-    line.textContent = `[${stamp}] ${winnerText}`;
-    historyEl.prepend(line);
-
-  } else {
-    const teamA = state.A.map(i=>ROSTER[i]);
-    const teamB = state.B.map(i=>ROSTER[i]);
-    const tName = (t)=> t.map(x=>x.name).join(" & ");
-    const series = bestOfFive(() =>
-      roundResultTag({ advA:advKindA, advB:advKindB, bonusA:bA, bonusB:bB })
-    );
-    const winnerTeam = (series.winnerSide === "A") ? teamA : teamB;
-
-    const matchupText = `${tName(teamA)} vs ${tName(teamB)}`;
-    const winnerText  = `${tName(winnerTeam)} win the series ${series.scoreA}-${series.scoreB}${isTitle ? " to retain/capture the CFW Tag Team Championship" : ""}.`;
-
-    out.innerHTML = `
-      <div class="result">
-        <div class="belt" aria-hidden="true">${isTitle ? "🏆" : "🎲"}</div>
-        <div>
-          <div style="font-weight:800; font-size:16px; margin-bottom:4px">${matchupText}</div>
-          <div style="color:#c7f9cc">${winnerText}</div>
-          <div class="tiny" style="margin-top:6px; color:var(--muted)">
-            Format: Best of 5 • Team roll = (d20+d20) + bonus • A: ${advKindA}${bA?` ${bA>=0?"+":""}${bA}`:""} • B: ${advKindB}${bB?` ${bB>=0?"+":""}${bB}`:""}
-          </div>
-          <div class="roundlog">
-            ${series.rounds.map(({r,a,b,note,scoreA,scoreB,winner}) => `
-              <div class="r">
-                <strong>Round ${r}:</strong> Team A <strong>${a}</strong> — Team B <strong>${b}</strong>
-                <span class="tiny" style="margin-left:6px; color:#b5b9cd">${note}</span>
-                <span class="badge win">${winner==="A"?tName(teamA):tName(teamB)} take it (${scoreA}-${scoreB})</span>
-              </div>`).join("")}
-          </div>
-        </div>
-      </div>
-    `;
-    const stamp = new Date().toLocaleString();
-    const line = document.createElement("div");
-    line.textContent = `[${stamp}] ${winnerText}`;
-    historyEl.prepend(line);
-  }
-}
-
-/* ---------- CLEAR & MODE ---------- */
-function clearPicks(){
-  state.A = []; state.B = [];
-  rosterEl.querySelectorAll(".card[aria-selected='true']").forEach(el=>el.setAttribute("aria-selected","false"));
-  renderSlots(); validateButton(); out.style.display="none"; out.innerHTML="";
-}
-$("#book").addEventListener("click", bookMatch);
-$("#clear").addEventListener("click", clearPicks);
-document.querySelectorAll(".seg button").forEach(btn=>{
-  btn.addEventListener("click", ()=>{
-    document.querySelectorAll(".seg button").forEach(b=>{ b.classList.remove("active"); b.setAttribute("aria-selected","false"); });
-    btn.classList.add("active"); btn.setAttribute("aria-selected","true");
-    MODE = btn.dataset.mode; clearPicks();
-  });
-});
-</script>
- <footer>© <span id="y"></span> Creative Force Wrestling</footer>
+  <script>document.getElementById('y').textContent=new Date().getFullYear();</script>
 </body>
 </html>
+
+
