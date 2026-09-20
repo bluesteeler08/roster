@@ -12,7 +12,7 @@
 </script>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>CFW Match Randomizer — Best of 5 (d20) + Advantage</title>
+<title>CFW Match Randomizer — Best of 5 (d20) + Bonus</title>
 <style>
   :root{
     --bg:#0b0b10; --card:#151521; --ink:#e7e7f7; --muted:#9aa0b5;
@@ -89,13 +89,13 @@
     background:#1d1d2b; border:1px solid rgba(255,255,255,.08); font-size:13px; margin-right:8px}
   .sm{width:24px; height:24px; border-radius:6px; display:grid; place-items:center; color:#0b0b10; font-weight:800}
 
-  .advbar{display:flex; gap:8px; align-items:center; margin-left:auto}
-  .advbar label{font-size:12px; color:#9aa0b5}
-  .advbar select, .advbar input{
+  .bonusbar{display:flex; gap:8px; align-items:center; margin-left:auto}
+  .bonusbar label{font-size:12px; color:#9aa0b5}
+  .bonusbar select, .bonusbar input{
     background:#101020; color:#e7e7f7; border:1px solid rgba(255,255,255,.12);
     border-radius:10px; padding:6px 8px; font-size:12px; width:auto;
   }
-  .advbar input{width:60px; text-align:center}
+  .bonusbar input{width:60px; text-align:center}
 
   .actions{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
   .btn{all:unset; cursor:pointer; padding:12px 16px; border-radius:12px; font-weight:800; letter-spacing:.3px;
@@ -149,7 +149,7 @@
 
   @media (max-width:720px){
     .picked{grid-template-columns:1fr}
-    .advbar{width:100%; justify-content:flex-start; margin-left:0}
+    .bonusbar{width:100%; justify-content:flex-start; margin-left:0}
   }
   /* --- Layout containment fix --- */
 html, body {
@@ -219,6 +219,52 @@ html, body { margin:0; padding:0; overflow-x:hidden; max-width:100%; }
 }
 
   
+  .bonusbar{margin-top:10px;flex-wrap:wrap}
+  .stepper{width:32px;height:32px;border-radius:9px;border:1px solid #45415b;
+    background:#242036;color:var(--ink);font-size:19px;cursor:pointer}
+  .stepper:hover{background:#38304f}
+  #titleOptions:not([hidden]){display:grid;gap:6px;max-width:100%}
+  #titleOptions select{background:#101020;color:var(--ink);border:1px solid #45415b;
+    border-radius:10px;padding:8px;max-width:100%;min-width:0}
+  .chk:has(input:disabled){opacity:.5}
+  .result>div:last-child{min-width:0;overflow-wrap:anywhere}
+  .r .tiny{display:block;margin-top:4px}
+  button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+  @media(max-width:720px){.wrap{padding:0 12px}.brand{gap:14px;flex-wrap:wrap}.controls{max-width:100%}}
+  /* Keep the match controls at the top; title settings expand below them. */
+  header{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start}
+  header .brand{min-width:0;gap:18px}
+  header .logo-link{flex-shrink:0}
+  header .title{min-width:0}
+  header .page-title{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+  header .page-title .subnav-inline{margin-left:0;line-height:1.4}
+  header .controls{display:grid;grid-template-columns:auto auto auto;gap:10px;
+    padding:10px;max-width:100%;margin-top:6px}
+  header .controls .seg button{padding:8px 10px;white-space:nowrap}
+  header .controls .chk{white-space:nowrap}
+  header .controls #clear{padding:10px 12px;font-size:14px;text-align:center}
+  #titleOptions{grid-column:1 / -1;min-width:0}
+  #titleOptions:not([hidden]){padding-top:10px;border-top:1px solid rgba(255,255,255,.08)}
+  #titleOptions select{width:100%;font:inherit;font-size:14px}
+  @media(max-width:900px){
+    header{grid-template-columns:minmax(0,1fr)}
+    header .controls{justify-self:start;margin-top:0}
+  }
+  @media(max-width:420px){
+    header .controls{width:100%;gap:6px;padding:8px}
+    header .controls .seg{gap:2px;padding:4px}
+    header .controls .seg button{padding:8px 6px;font-size:12px}
+    header .controls .chk{gap:4px;font-size:12px}
+    header .controls #clear{padding:10px 8px;font-size:12px}
+    header .page-title .subnav-inline{white-space:normal}
+  }
+  .picked.triple{grid-template-columns:repeat(3,minmax(0,1fr))}
+  @media(max-width:720px){.picked.triple{grid-template-columns:1fr}}
+  @media(max-width:520px){
+    header .controls{grid-template-columns:1fr auto;width:100%}
+    header .controls .seg{grid-column:1 / -1}
+    header .controls .seg button{text-align:center}
+  }
 </style>
   <!-- Basic Meta -->
   <meta charset="utf-8">
@@ -265,8 +311,6 @@ html, body { margin:0; padding:0; overflow-x:hidden; max-width:100%; }
 </script>
 </head>
 
-</head>
-
 <body>
   
   <div class="wrap">
@@ -285,7 +329,7 @@ html, body { margin:0; padding:0; overflow-x:hidden; max-width:100%; }
   </span>
 </h1>           
  
-          <p>Best of 5 • d20 rolls • Advantage/Disadvantage + Bonus</p>
+          <p id="matchSubtitle">Best of 5 • d20 rolls + Bonus • First to 3 wins</p>
 
         </div>
       </div>
@@ -293,9 +337,25 @@ html, body { margin:0; padding:0; overflow-x:hidden; max-width:100%; }
         <div class="seg" role="tablist" aria-label="Match type">
           <button class="active" data-mode="singles" role="tab" aria-selected="true">Singles</button>
           <button data-mode="tag" role="tab" aria-selected="false">Tag (2v2)</button>
+          <button data-mode="triple" role="tab" aria-selected="false">Triple Threat</button>
         </div>
         <label class="chk"><input id="titleToggle" type="checkbox" /> Title Match</label>
-        <button class="btn ghost" id="clear">Clear Picks</button>
+        <button class="btn ghost" id="clear" title="Clear picks and bonuses" aria-label="Clear picks and bonuses">Clear</button>
+        <div id="titleOptions" hidden>
+          <label class="tiny" for="championship">Championship</label>
+          <select id="championship">
+            <option>CFW World Championship</option>
+            <option>Women's World Championship</option>
+            <option>Black Light Championship</option>
+          </select>
+          <label class="tiny" for="defender">Defending champion</label>
+          <select id="defender">
+            <option value="A">Corner A</option>
+            <option value="B">Corner B</option>
+            <option value="vacant">Vacant</option>
+          </select>
+          <span class="tiny">Enter any champion bonus manually below.</span>
+        </div>
       </div>
     </header>
 
@@ -313,35 +373,37 @@ html, body { margin:0; padding:0; overflow-x:hidden; max-width:100%; }
         <div>
           <h3 style="margin:0 0 10px">Corner A</h3>
           <div id="cornerA" class="slot" aria-live="polite"><h4>Pick for this side</h4></div>
-          <div class="advbar">
-            <label for="advA">Adv:</label>
-            <select id="advA">
-              <option value="none">None</option>
-              <option value="adv">Advantage</option>
-              <option value="dis">Disadvantage</option>
-            </select>
+          <div class="bonusbar">
             <label for="bonusA">Bonus:</label>
-            <input id="bonusA" type="number" step="1" value="0" min="-5" max="10" />
+            <button type="button" class="stepper" data-bonus="bonusA" data-step="-1" aria-label="Decrease Corner A bonus">−</button>
+            <input id="bonusA" type="number" step="1" value="0" min="-5" max="10" aria-label="Corner A bonus" />
+            <button type="button" class="stepper" data-bonus="bonusA" data-step="1" aria-label="Increase Corner A bonus">+</button>
           </div>
         </div>
         <div>
           <h3 style="margin:0 0 10px">Corner B</h3>
           <div id="cornerB" class="slot" aria-live="polite"><h4>Pick for this side</h4></div>
-          <div class="advbar">
-            <label for="advB">Adv:</label>
-            <select id="advB">
-              <option value="none">None</option>
-              <option value="adv">Advantage</option>
-              <option value="dis">Disadvantage</option>
-            </select>
+          <div class="bonusbar">
             <label for="bonusB">Bonus:</label>
-            <input id="bonusB" type="number" step="1" value="0" min="-5" max="10" />
+            <button type="button" class="stepper" data-bonus="bonusB" data-step="-1" aria-label="Decrease Corner B bonus">−</button>
+            <input id="bonusB" type="number" step="1" value="0" min="-5" max="10" aria-label="Corner B bonus" />
+            <button type="button" class="stepper" data-bonus="bonusB" data-step="1" aria-label="Increase Corner B bonus">+</button>
+          </div>
+        </div>
+        <div id="cornerCPanel" hidden>
+          <h3 style="margin:0 0 10px">Corner C</h3>
+          <div id="cornerC" class="slot" aria-live="polite"><h4>Pick for this side</h4></div>
+          <div class="bonusbar">
+            <label for="bonusC">Bonus:</label>
+            <button type="button" class="stepper" data-bonus="bonusC" data-step="-1" aria-label="Decrease Corner C bonus">−</button>
+            <input id="bonusC" type="number" step="1" value="0" min="-5" max="10" aria-label="Corner C bonus" />
+            <button type="button" class="stepper" data-bonus="bonusC" data-step="1" aria-label="Increase Corner C bonus">+</button>
           </div>
         </div>
       </div>
       <div class="actions" style="margin-top:14px">
         <button id="book" class="btn">Book the Match</button>
-        <span class="tiny">Singles needs 2 picks total. Tag needs 4 (2 per side).</span>
+        <span class="tiny" id="matchHelp">Singles: 2 picks. First to 3 wins. Ties reroll with the same bonuses.</span>
       </div>
     </section>
 
@@ -397,19 +459,19 @@ const ROSTER = [
 ];
 
 let MODE = "singles";
-const state = { A:[], B:[] };
+const state = { A:[], B:[], C:[] };
 
 const $ = sel => document.querySelector(sel);
 const rosterEl = $("#roster");
 const cornerA = $("#cornerA");
 const cornerB = $("#cornerB");
+const cornerC = $("#cornerC");
 const out = $("#out");
 const historyEl = $("#history");
 const titleToggle = $("#titleToggle");
 
-// Advantage controls
-const advA = $("#advA"), advB = $("#advB");
-const bonusA = $("#bonusA"), bonusB = $("#bonusB");
+// Bonus controls
+const bonusA = $("#bonusA"), bonusB = $("#bonusB"), bonusC = $("#bonusC");
 
 /* ---------- UI RENDER ---------- */
 function renderRoster(){
@@ -450,178 +512,211 @@ function renderRoster(){
 }
 renderRoster();
 
-function maxPerSide(){ return MODE === "singles" ? 1 : 2; }
-function neededTotal(){ return MODE === "singles" ? 2 : 4; }
+function activeSides(){ return MODE === "triple" ? ["A","B","C"] : ["A","B"]; }
+function maxPerSide(){ return MODE === "tag" ? 2 : 1; }
+function neededTotal(){ return MODE === "triple" ? 3 : MODE === "tag" ? 4 : 2; }
 
 function togglePick(idx, cardEl){
-  if (state.A.includes(idx) || state.B.includes(idx)){
-    state.A = state.A.filter(i => i!==idx);
-    state.B = state.B.filter(i => i!==idx);
+  if (Object.values(state).some(picks=>picks.includes(idx))){
+    for(const side of Object.keys(state)) state[side]=state[side].filter(i=>i!==idx);
     cardEl.setAttribute("aria-selected","false");
   } else {
-    if (state.A.length < maxPerSide()){ state.A.push(idx); cardEl.setAttribute("aria-selected","true"); }
-    else if (state.B.length < maxPerSide()){ state.B.push(idx); cardEl.setAttribute("aria-selected","true"); }
-    else { cardEl.animate([{transform:"translateY(0)"},{transform:"translateY(-3px)"},{transform:"translateY(0)"}],{duration:200}); }
+    const side=activeSides().find(side=>state[side].length<maxPerSide());
+    if(side){ state[side].push(idx); cardEl.setAttribute("aria-selected","true"); }
+    else cardEl.animate([{transform:"translateY(0)"},{transform:"translateY(-3px)"},{transform:"translateY(0)"}],{duration:200});
   }
   renderSlots(); validateButton();
 }
 
 function renderSlots(){
   const mkChip = (r) => `<span class="chip"><span class="sm" style="background:${r.color}">${r.short}</span>${r.name}</span>`;
-  cornerA.innerHTML = `<h4>${MODE==="singles"?"Competitor":"Team A"}</h4>` + state.A.map(i=>mkChip(ROSTER[i])).join("");
-  cornerB.innerHTML = `<h4>${MODE==="singles"?"Competitor":"Team B"}</h4>` + state.B.map(i=>mkChip(ROSTER[i])).join("");
+  for(const [side,element] of Object.entries({A:cornerA,B:cornerB,C:cornerC})){
+    element.innerHTML=`<h4>${MODE==="tag"?"Team "+side:"Competitor"}</h4>`+state[side].map(i=>mkChip(ROSTER[i])).join("");
+  }
+  $("#cornerCPanel").hidden=MODE!=="triple";
+  $(".picked").classList.toggle("triple",MODE==="triple");
+  $("#matchSubtitle").textContent=MODE==="triple"
+    ? "Triple Threat • d20 rolls + Bonus • First to 3 points"
+    : `Best of 5 • ${MODE==="tag"?"2d20 per team":"d20 rolls"} + Bonus • First to 3 wins`;
+  $("#matchHelp").textContent=MODE==="triple"
+    ? "Triple Threat: 3 picks. First to 3 points. Only wrestlers tied for the highest total reroll, keeping their bonuses."
+    : MODE==="tag" ? "Tag: 4 picks, with one bonus per team. First to 3 wins. Ties reroll with the same bonuses."
+    : "Singles: 2 picks. First to 3 wins. Ties reroll with the same bonuses.";
 }
 function validateButton(){
-  const total = state.A.length + state.B.length;
-  $("#book").disabled = total !== neededTotal();
+  $("#book").disabled = !activeSides().every(side=>state[side].length===maxPerSide());
 }
 validateButton();
 
 /* ---------- DICE HELPERS ---------- */
-function rollD20(){ return Math.floor(Math.random()*20)+1; } // 1..20
-function rollWithAdv(kind){
-  const r1 = rollD20(), r2 = rollD20();
-  if (kind === "adv") return Math.max(r1, r2);
-  if (kind === "dis") return Math.min(r1, r2);
-  return r1;
+// Uniform d20: reject the four excess values so every face has equal odds.
+function rollD20(){
+  const buffer = new Uint32Array(1);
+  do { crypto.getRandomValues(buffer); } while (buffer[0] >= 4294967292);
+  return buffer[0] % 20 + 1;
 }
-function parseBonus(el){ return Number(el.value)||0; }
-
-function roundResultSingles(opts){
-  const { nameA, nameB, advA, advB, bonusA, bonusB } = opts;
-  let baseA = rollWithAdv(advA), baseB = rollWithAdv(advB);
-  let a = baseA + bonusA, b = baseB + bonusB;
-
-  let note = `${advA!=="none" ? `A ${advA} ` : ""}${advB!=="none" ? `B ${advB} ` : ""}`.trim();
-  if (bonusA) note += `${note?" • ":""}A bonus ${bonusA>=0?"+":""}${bonusA}`;
-  if (bonusB) note += `${note?" • ":""}B bonus ${bonusB>=0?"+":""}${bonusB}`;
-  if (note==="") note = "";
-
-  if (a === b){
-    const ra = rollD20(), rb = rollD20();
-    note += `${note?" • ":""}tie ${a}-${b}, reroll ${ra}-${rb}`;
-    a = ra; b = rb;
-  }
-  if (baseA===20 || baseB===20) note += `${note?" • ":""}Nat 20!`;
-  if (baseA===1  || baseB===1 ) note += `${note?" • ":""}(1 rolled)`;
-
-  return { a, b, note, winner: (a>b) ? "A" : "B" };
+function parseBonus(el){
+  const value = Number(el.value);
+  const bonus = Number.isFinite(value) ? Math.max(-5, Math.min(10, Math.trunc(value))) : 0;
+  el.value = bonus;
+  return bonus;
 }
-
-function roundResultTag(opts){
-  const { advA, advB, bonusA, bonusB } = opts;
-  const a1 = rollWithAdv(advA), a2 = rollWithAdv(advA);
-  const b1 = rollWithAdv(advB), b2 = rollWithAdv(advB);
-  let a = a1 + a2 + bonusA, b = b1 + b2 + bonusB;
-  let note = `A(${a1}+${a2}${bonusA?`+${bonusA}`:""}) vs B(${b1}+${b2}${bonusB?`+${bonusB}`:""})`;
-  if (advA!=="none") note += ` • A ${advA}`;
-  if (advB!=="none") note += ` • B ${advB}`;
-  if ([a1,a2,b1,b2].includes(20)) note += ` • Nat 20!`;
-  if (a === b){
-    const ra = rollD20(), rb = rollD20();
-    note += ` • tie, sudden death ${ra}-${rb}`;
-    a = ra; b = rb;
-  }
-  return { a, b, note, winner: (a>b) ? "A" : "B" };
+function rollRound(diceCount, bonusA, bonusB){
+  const attempts = [];
+  let a, b;
+  do {
+    const diceA = Array.from({length:diceCount}, rollD20);
+    const diceB = Array.from({length:diceCount}, rollD20);
+    a = diceA.reduce((x,y)=>x+y,0) + bonusA;
+    b = diceB.reduce((x,y)=>x+y,0) + bonusB;
+    attempts.push({diceA,diceB,a,b});
+  } while (a === b);
+  return {a,b,attempts,winner:a>b ? "A" : "B"};
 }
-
 function bestOfFive(runRound){
-  const rounds = []; let scoreA = 0, scoreB = 0, r = 0;
-  while (scoreA < 3 && scoreB < 3){
-    r++;
-    const rr = runRound();
-    if (rr.winner === "A") scoreA++; else scoreB++;
-    rounds.push({ r, ...rr, scoreA, scoreB });
+  const rounds = [];
+  let scoreA=0, scoreB=0;
+  while(scoreA<3 && scoreB<3){
+    const rr=runRound();
+    if(rr.winner==="A") scoreA++; else scoreB++;
+    rounds.push({r:rounds.length+1,...rr,scoreA,scoreB});
   }
-  return { rounds, scoreA, scoreB, winnerSide: (scoreA>scoreB)?"A":"B" };
+  return {rounds,scoreA,scoreB,winnerSide:scoreA>scoreB?"A":"B"};
 }
-
-/* ---------- BOOK MATCH (Best of 5 + Adv) ---------- */
+function scoreText(series){
+  return Math.max(series.scoreA,series.scoreB)+"–"+Math.min(series.scoreA,series.scoreB);
+}
+function escapeHTML(value){
+  return String(value).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function rollMath(dice, bonus){
+  return dice.join(" + ") + (bonus<0 ? " − "+Math.abs(bonus) : " + "+bonus) +
+    " = " + (dice.reduce((x,y)=>x+y,0)+bonus);
+}
+function titleEnding(isTitle, title, defender, winnerSide){
+  if(!isTitle) return "";
+  return defender===winnerSide ? " and retains the "+title :
+    " and wins the "+title+" — NEW CHAMPION";
+}
+function rollTripleRound(bonuses){
+  let contenders=["A","B","C"];
+  const attempts=[];
+  while(true){
+    const rolls=contenders.map(side=>{
+      const die=rollD20();
+      return {side,die,total:die+bonuses[side]};
+    });
+    const high=Math.max(...rolls.map(roll=>roll.total));
+    const leaders=rolls.filter(roll=>roll.total===high).map(roll=>roll.side);
+    attempts.push({rolls,leaders});
+    if(leaders.length===1) return {winner:leaders[0],attempts};
+    contenders=leaders;
+  }
+}
+function tripleSeries(runRound){
+  const scores={A:0,B:0,C:0}, rounds=[];
+  while(true){
+    const rr=runRound();
+    scores[rr.winner]++;
+    rounds.push({...rr,r:rounds.length+1,scores:{...scores}});
+    if(scores[rr.winner]===3) return {rounds,scores,winnerSide:rr.winner};
+  }
+}
+function tripleStanding(scores,names){
+  return ["A","B","C"].sort((a,b)=>scores[b]-scores[a])
+    .map(side=>names[side]+" "+scores[side]).join(" · ");
+}
+function bookTripleMatch(){
+  if(!["A","B","C"].every(side=>state[side].length===1)) return;
+  const names=Object.fromEntries(["A","B","C"].map(side=>[side,ROSTER[state[side][0]].name]));
+  const bonuses={A:parseBonus(bonusA),B:parseBonus(bonusB),C:parseBonus(bonusC)};
+  const series=tripleSeries(()=>rollTripleRound(bonuses));
+  const winnerText=names[series.winnerSide]+" wins the Triple Threat!";
+  const finalScore=tripleStanding(series.scores,names);
+  out.style.display="block";
+  out.innerHTML=`<div class="result">
+    <div class="belt" aria-hidden="true">🎲</div><div>
+      <div style="font-weight:800;font-size:16px;margin-bottom:4px">${Object.values(names).map(escapeHTML).join(" vs ")}</div>
+      <div style="color:#c7f9cc">${escapeHTML(winnerText)}</div>
+      <div style="margin-top:4px">${escapeHTML(finalScore)}</div>
+      <div class="tiny" style="margin-top:6px">First to 3 points • d20 per competitor + bonus • Only tied leaders reroll with the same bonuses</div>
+      <div class="roundlog">${series.rounds.map(rr=>`<div class="r">
+        <strong>Round ${rr.r}</strong>
+        ${rr.attempts.map((attempt,i)=>`<span class="tiny">${i?"Reroll "+i+": ":""}${attempt.rolls.map(roll=>escapeHTML(names[roll.side])+": "+rollMath([roll.die],bonuses[roll.side])).join(" — ")}${attempt.leaders.length>1?" • Top tie — "+attempt.leaders.map(side=>escapeHTML(names[side])).join(" & ")+" reroll":""}</span>`).join("")}
+        <span class="badge win">${escapeHTML(names[rr.winner])} wins the round</span>
+        <span class="tiny">${rr.scores[rr.winner]===3?"Final: ":"Score: "}${escapeHTML(tripleStanding(rr.scores,names))}</span>
+      </div>`).join("")}</div>
+    </div></div>`;
+  const line=document.createElement("div");
+  line.textContent="["+new Date().toLocaleString()+"] "+winnerText+" "+finalScore;
+  historyEl.prepend(line);
+}
 function bookMatch(){
-  const isTitle = titleToggle.checked;
-  const mode = MODE;
-  out.style.display = "block";
-
-  const advKindA = advA.value, advKindB = advB.value;
-  const bA = parseBonus(bonusA), bB = parseBonus(bonusB);
-
-  if (mode === "singles"){
-    const A = ROSTER[state.A[0]];
-    const B = ROSTER[state.B[0]];
-    const series = bestOfFive(() =>
-      roundResultSingles({ nameA:A.name, nameB:B.name, advA:advKindA, advB:advKindB, bonusA:bA, bonusB:bB })
-    );
-    const winner = (series.winnerSide === "A") ? A : B;
-    const matchupText = `${A.name} vs ${B.name}`;
-    const winnerText  = `${winner.name} wins the series ${series.scoreA}-${series.scoreB}${isTitle ? " to retain/capture the CFW World Championship" : ""}.`;
-
-    out.innerHTML = `
-      <div class="result">
-        <div class="belt" aria-hidden="true">${isTitle ? "🏆" : "🎲"}</div>
-        <div>
-          <div style="font-weight:800; font-size:16px; margin-bottom:4px">${matchupText}</div>
-          <div style="color:#c7f9cc">${winnerText}</div>
-          <div class="tiny" style="margin-top:6px; color:var(--muted)">
-            Format: Best of 5 • d20 • A: ${advKindA}${bA?` ${bA>=0?"+":""}${bA}`:""} • B: ${advKindB}${bB?` ${bB>=0?"+":""}${bB}`:""}
-          </div>
-          <div class="roundlog">
-            ${series.rounds.map(({r,a,b,note,scoreA,scoreB,winner}) => `
-              <div class="r">
-                <strong>Round ${r}:</strong> ${A.name} <strong>${a}</strong> — ${B.name} <strong>${b}</strong>
-                ${note ? `<span class="tiny" style="margin-left:6px; color:#b5b9cd">${note}</span>` : ""}
-                <span class="badge win">${winner==="A"?A.name:B.name} takes it (${scoreA}-${scoreB})</span>
-              </div>`).join("")}
-          </div>
+  if(MODE==="triple"){ bookTripleMatch(); return; }
+  if(state.A.length!==maxPerSide() || state.B.length!==maxPerSide()) return;
+  const isTag=MODE==="tag";
+  const isTitle=!isTag && titleToggle.checked;
+  const bA=parseBonus(bonusA), bB=parseBonus(bonusB);
+  const nameA=state.A.map(i=>ROSTER[i].name).join(" & ");
+  const nameB=state.B.map(i=>ROSTER[i].name).join(" & ");
+  const series=bestOfFive(()=>rollRound(isTag?2:1,bA,bB));
+  const winner=series.winnerSide==="A"?nameA:nameB;
+  const loser=series.winnerSide==="A"?nameB:nameA;
+  const title=$("#championship").value;
+  const defender=$("#defender").value;
+  const winnerText=winner+(isTag?" defeat ":" defeats ")+loser+", "+scoreText(series)+
+    titleEnding(isTitle,title,defender,series.winnerSide)+".";
+  const safeA=escapeHTML(nameA), safeB=escapeHTML(nameB);
+  out.style.display="block";
+  out.innerHTML=`
+    <div class="result">
+      <div class="belt" aria-hidden="true">${isTitle?"🏆":"🎲"}</div>
+      <div>
+        <div style="font-weight:800;font-size:16px;margin-bottom:4px">${safeA} vs ${safeB}</div>
+        <div style="color:#c7f9cc">${escapeHTML(winnerText)}</div>
+        <div class="tiny" style="margin-top:6px">Best of 5 • ${isTag?"2d20 per team":"d20 per competitor"} + bonus • Ties reroll with the same bonuses</div>
+        <div class="roundlog">
+        ${series.rounds.map(rr=>{
+          const standing=rr.scoreA===rr.scoreB ? "Series tied "+rr.scoreA+"–"+rr.scoreB :
+            escapeHTML(rr.scoreA>rr.scoreB?nameA:nameB)+(isTag?" lead ":" leads ")+scoreText(rr);
+          return `<div class="r">
+            <strong>Round ${rr.r}</strong>
+            ${rr.attempts.map((attempt,i)=>`<span class="tiny">
+              ${i?"Reroll "+i+": ":""}${safeA}: ${rollMath(attempt.diceA,bA)}
+              — ${safeB}: ${rollMath(attempt.diceB,bB)}
+              ${attempt.a===attempt.b?" • Tie — reroll":""}
+            </span>`).join("")}
+            <span class="badge win">${escapeHTML(rr.winner==="A"?nameA:nameB)} ${isTag?"win":"wins"} the round</span>
+            <span class="tiny">${Math.max(rr.scoreA,rr.scoreB)===3?"Final: "+escapeHTML(winner)+" "+scoreText(rr):standing}</span>
+          </div>`;
+        }).join("")}
         </div>
       </div>
-    `;
-    const stamp = new Date().toLocaleString();
-    const line = document.createElement("div");
-    line.textContent = `[${stamp}] ${winnerText}`;
-    historyEl.prepend(line);
-
-  } else {
-    const teamA = state.A.map(i=>ROSTER[i]);
-    const teamB = state.B.map(i=>ROSTER[i]);
-    const tName = (t)=> t.map(x=>x.name).join(" & ");
-    const series = bestOfFive(() =>
-      roundResultTag({ advA:advKindA, advB:advKindB, bonusA:bA, bonusB:bB })
-    );
-    const winnerTeam = (series.winnerSide === "A") ? teamA : teamB;
-
-    const matchupText = `${tName(teamA)} vs ${tName(teamB)}`;
-    const winnerText  = `${tName(winnerTeam)} win the series ${series.scoreA}-${series.scoreB}${isTitle ? " to retain/capture the CFW Tag Team Championship" : ""}.`;
-
-    out.innerHTML = `
-      <div class="result">
-        <div class="belt" aria-hidden="true">${isTitle ? "🏆" : "🎲"}</div>
-        <div>
-          <div style="font-weight:800; font-size:16px; margin-bottom:4px">${matchupText}</div>
-          <div style="color:#c7f9cc">${winnerText}</div>
-          <div class="tiny" style="margin-top:6px; color:var(--muted)">
-            Format: Best of 5 • Team roll = (d20+d20) + bonus • A: ${advKindA}${bA?` ${bA>=0?"+":""}${bA}`:""} • B: ${advKindB}${bB?` ${bB>=0?"+":""}${bB}`:""}
-          </div>
-          <div class="roundlog">
-            ${series.rounds.map(({r,a,b,note,scoreA,scoreB,winner}) => `
-              <div class="r">
-                <strong>Round ${r}:</strong> Team A <strong>${a}</strong> — Team B <strong>${b}</strong>
-                <span class="tiny" style="margin-left:6px; color:#b5b9cd">${note}</span>
-                <span class="badge win">${winner==="A"?tName(teamA):tName(teamB)} take it (${scoreA}-${scoreB})</span>
-              </div>`).join("")}
-          </div>
-        </div>
-      </div>
-    `;
-    const stamp = new Date().toLocaleString();
-    const line = document.createElement("div");
-    line.textContent = `[${stamp}] ${winnerText}`;
-    historyEl.prepend(line);
-  }
+    </div>`;
+  const line=document.createElement("div");
+  line.textContent="["+new Date().toLocaleString()+"] "+winnerText;
+  historyEl.prepend(line);
 }
+function syncTitleOptions(){
+  titleToggle.disabled=MODE!=="singles";
+  if(MODE!=="singles") titleToggle.checked=false;
+  $("#titleOptions").hidden=!titleToggle.checked;
+}
+titleToggle.addEventListener("change",syncTitleOptions);
+document.querySelectorAll(".stepper").forEach(button=>{
+  button.addEventListener("click",()=>{
+    const input=document.getElementById(button.dataset.bonus);
+    input.value=parseBonus(input)+Number(button.dataset.step);
+    parseBonus(input);
+  });
+});
+[bonusA,bonusB,bonusC].forEach(input=>input.addEventListener("change",()=>parseBonus(input)));
 
 /* ---------- CLEAR & MODE ---------- */
 function clearPicks(){
-  state.A = []; state.B = [];
+  state.A = []; state.B = []; state.C = [];
+  bonusA.value=0; bonusB.value=0; bonusC.value=0;
+  titleToggle.checked=false; $("#defender").value="A"; syncTitleOptions();
   rosterEl.querySelectorAll(".card[aria-selected='true']").forEach(el=>el.setAttribute("aria-selected","false"));
   renderSlots(); validateButton(); out.style.display="none"; out.innerHTML="";
 }
@@ -636,5 +731,6 @@ document.querySelectorAll(".seg button").forEach(btn=>{
 });
 </script>
  <footer>© <span id="y"></span> Creative Force Wrestling</footer>
+<script>document.getElementById("y").textContent=new Date().getFullYear();</script>
 </body>
 </html>
